@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800;1,6..12,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes folio-fade-in {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes folio-sub-in {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes folio-out {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+.folio-title-anim {
+  animation: folio-fade-in 1s ease forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+.folio-sub-anim {
+  animation: folio-sub-in 0.8s ease forwards;
+  animation-delay: 1.2s;
+  opacity: 0;
+}
+.folio-screen-out {
+  animation: folio-out 0.6s ease forwards;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #F9FAFB;
+    color: #374151;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#0060AE] hover:bg-[#00457D] text-white font-semibold px-4 py-2 rounded-full transition-colors duration-200 text-sm cursor-pointer border-0 inline-block no-underline;
+  }
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-50 text-[#374151] font-semibold px-4 py-2 rounded-full border border-[#E5E7EB] transition-colors duration-200 text-sm cursor-pointer inline-block no-underline;
+  }
+  .btn-danger {
+    @apply bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-full transition-colors duration-200 text-sm cursor-pointer border-0;
+  }
+  .card-book {
+    @apply bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer;
+  }
+  .input-field {
+    @apply w-full border border-[#E5E7EB] rounded-lg px-3 py-2 text-sm text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#0060AE] focus:border-transparent transition-all duration-200 bg-white;
+  }
+  .input-error {
+    @apply border-red-400 focus:ring-red-400;
+  }
+  .section-title {
+    @apply text-xl font-extrabold text-[#374151] mb-1;
+  }
+  .badge-free {
+    @apply bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+  .badge-sale {
+    @apply bg-orange-100 text-orange-600 text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+  .genre-pill {
+    @apply bg-[#EBF5FF] text-[#0060AE] text-xs font-semibold px-3 py-1 rounded-full hover:bg-[#0060AE] hover:text-white transition-colors duration-200 cursor-pointer border-0;
+  }
+  .container-main {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+}
