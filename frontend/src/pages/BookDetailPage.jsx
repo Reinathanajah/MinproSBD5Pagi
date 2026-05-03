@@ -160,17 +160,24 @@ export default function BookDetailPage() {
                   : <p className="text-black font-extrabold text-3xl mb-6 tracking-tighter text-gradient">{formatPrice(book.price)}</p>}
 
                 <div className="flex flex-wrap gap-4">
+                  <button 
+                    onClick={() => window.open(book.driveLink || 'https://drive.google.com/file/d/1Gs2lkAelCje1xCGzRpcgSO12ZGHhe-17/view?usp=sharing', '_blank')} 
+                    className="btn-primary shadow-xl"
+                  >
+                    BACA BUKU
+                  </button>
+
                   {owned
-                    ? <button onClick={() => navigate('/library')} className="btn-primary shadow-xl">LANJUT MEMBACA</button>
-                    : <button onClick={handleCheckout} className="btn-primary shadow-xl">
-                        {book.accessType === 'free' ? 'AKSES GRATIS' : 'CHECKOUT SEKARANG'}
+                    ? <button onClick={() => navigate('/library')} className="btn-secondary shadow-sm bg-white/60">KE PERPUSTAKAAN</button>
+                    : <button onClick={handleCheckout} className="btn-secondary shadow-sm bg-white/60">
+                        {book.accessType === 'free' ? 'KLAIM GRATIS' : 'CHECKOUT'}
                       </button>}
 
                   {isAdmin && (
                     <>
-                      <button onClick={handleArchive} className="btn-secondary">ARSIPKAN</button>
+                      <button onClick={handleArchive} className="btn-secondary bg-white/60 text-red-600">ARSIPKAN</button>
                       <button onClick={handleDelete}  className="btn-danger">HAPUS</button>
-                      <button onClick={() => setAttrModal(true)} className="btn-secondary">+ ATRIBUT</button>
+                      <button onClick={() => setAttrModal(true)} className="btn-secondary bg-white/60">+ ATRIBUT</button>
                     </>
                   )}
                 </div>

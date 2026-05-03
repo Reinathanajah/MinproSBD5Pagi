@@ -85,17 +85,17 @@ export default function SearchPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-widest">GENRE</label>
-                    <div className="flex flex-wrap gap-2 max-h-56 overflow-y-auto scrollbar-hide">
+                    <label className="block text-[10px] font-bold text-gray-500 mb-3 uppercase tracking-widest">GENRE</label>
+                    <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto scrollbar-hide pb-2">
                       <button
                         onClick={() => setSelGenre('')}
-                        className={`text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-full transition-all shadow-sm ${!selGenre ? 'bg-black text-white shadow-black/20' : 'bg-white/60 text-gray-500 hover:bg-white/90 border border-white/50'}`}
+                        className={`text-[10px] font-extrabold uppercase tracking-widest px-4 py-2.5 rounded-full transition-all duration-300 border ${!selGenre ? 'bg-black text-white border-black shadow-md shadow-black/20' : 'bg-white/80 text-gray-600 border-gray-200 hover:bg-white hover:text-black hover:border-gray-300 hover:shadow-sm'}`}
                       >SEMUA</button>
                       {GENRES.map(g => (
                         <button
                           key={g}
                           onClick={() => setSelGenre(g === selGenre ? '' : g)}
-                          className={`text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-full transition-all shadow-sm ${selGenre === g ? 'bg-black text-white shadow-black/20' : 'bg-white/60 text-gray-500 hover:bg-white/90 border border-white/50'}`}
+                          className={`text-[10px] font-extrabold uppercase tracking-widest px-4 py-2.5 rounded-full transition-all duration-300 border ${selGenre === g ? 'bg-black text-white border-black shadow-md shadow-black/20' : 'bg-white/80 text-gray-600 border-gray-200 hover:bg-white hover:text-black hover:border-gray-300 hover:shadow-sm'}`}
                         >{g}</button>
                       ))}
                     </div>
@@ -106,7 +106,7 @@ export default function SearchPage() {
             </aside>
           )}
 
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <div className="flex items-end justify-between mb-8 border-b border-gray-200/50 pb-4">
               <div className="animate-float">
                 <h1 className="text-3xl lg:text-4xl font-extrabold text-black uppercase tracking-tighter text-gradient">{pageTitle}</h1>
@@ -126,19 +126,31 @@ export default function SearchPage() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
                   {books.map(b => <BookCard key={b._id} book={b} />)}
                 </div>
 
                 {pages > 1 && (
-                  <div className="flex justify-center gap-3 mt-16">
-                    {Array.from({ length: pages }, (_, i) => i + 1).map(n => (
-                      <button
-                        key={n}
-                        onClick={() => goPage(n)}
-                        className={`w-10 h-10 rounded-full text-sm font-extrabold transition-all duration-300 ${n === page ? 'bg-black text-white shadow-lg shadow-black/20 scale-110' : 'glass-panel text-gray-500 hover:bg-white'}`}
-                      >{n}</button>
-                    ))}
+                  <div className="flex justify-center items-center gap-4 sm:gap-8 mt-16">
+                    <button
+                      onClick={() => goPage(Math.max(1, page - 1))}
+                      disabled={page === 1}
+                      className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3"
+                    >
+                      &larr; SEBELUMNYA
+                    </button>
+                    
+                    <span className="text-black font-extrabold uppercase tracking-widest text-xs sm:text-sm bg-white/60 backdrop-blur-md px-6 py-3 rounded-full border border-gray-200">
+                      HALAMAN {page} DARI {pages}
+                    </span>
+
+                    <button
+                      onClick={() => goPage(Math.min(pages, page + 1))}
+                      disabled={page === pages}
+                      className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3"
+                    >
+                      SELANJUTNYA &rarr;
+                    </button>
                   </div>
                 )}
               </>

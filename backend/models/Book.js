@@ -59,6 +59,7 @@ const bookSchema = new mongoose.Schema({
   embeddedRatings:  { type: [ratingSchema], default: [] },
 
   optionalAttributes: { type: [optionalAttrSchema], default: [] },
+  driveLink: { type: String, default: 'https://drive.google.com/file/d/1Gs2lkAelCje1xCGzRpcgSO12ZGHhe-17/view?usp=sharing' },
 
   registeredAt: { type: Date, default: Date.now },
   previousBook: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' }

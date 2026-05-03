@@ -25,7 +25,13 @@ export default function Navbar() {
     if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`)
   }
 
-  const trending = ['NOVEL TERLARIS', 'BUKU ANAK', 'SELF-HELP', 'FIKSI ILMIAH', 'BIOGRAFI']
+  const trending = [
+    { label: 'NOVEL TERLARIS', url: '/search?sort=viewed' },
+    { label: 'BUKU ANAK',      url: '/search?genre=Anak-anak' },
+    { label: 'SELF-HELP',      url: '/search?genre=Self-Help' },
+    { label: 'SAINS & TEKNO',  url: '/search?genre=Sains & Teknologi' },
+    { label: 'BIOGRAFI',       url: '/search?genre=Biografi' }
+  ]
 
   return (
     <header className="bg-white/80 backdrop-blur-xl border-b border-white/50 sticky top-0 z-50 shadow-sm shadow-black/5">
@@ -60,12 +66,12 @@ export default function Navbar() {
               )}
             </div>
             <div className="flex gap-3 mt-2 pl-4 flex-wrap">
-              {trending.slice(0, 3).map(t => (
+              {trending.slice(0, 4).map(t => (
                 <button
-                  key={t} type="button"
-                  onClick={() => { setQuery(t); navigate(`/search?q=${encodeURIComponent(t)}`) }}
+                  key={t.label} type="button"
+                  onClick={() => navigate(t.url)}
                   className="text-[9px] lg:text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition-colors"
-                >{t}</button>
+                >{t.label}</button>
               ))}
             </div>
           </form>
