@@ -8,12 +8,12 @@ export default function IntroScreen({ onDone }) {
     const step = setInterval(() => {
       setProgress(p => {
         if (p >= 100) { clearInterval(step); return 100 }
-        return p + 1.5
+        return p + 2
       })
-    }, 30)
+    }, 20)
 
-    const exitTimer = setTimeout(() => setLeaving(true), 2800)
-    const doneTimer = setTimeout(() => onDone(), 3400)
+    const exitTimer = setTimeout(() => setLeaving(true), 2400)
+    const doneTimer = setTimeout(() => onDone(), 3200)
 
     return () => {
       clearInterval(step)
@@ -24,55 +24,41 @@ export default function IntroScreen({ onDone }) {
 
   return (
     <div
-      className={`bg-mesh-gradient ${leaving ? 'folio-screen-out' : ''}`}
-      style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        gap: '1.5rem',
-        pointerEvents: 'none'
-      }}
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-transform duration-1000 ease-[cubic-bezier(0.85,0,0.15,1)] ${leaving ? '-translate-y-full' : 'translate-y-0'}`}
     >
-      <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-0 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-mesh-gradient opacity-10 mix-blend-overlay pointer-events-none" />
+      
+      <div className="relative z-10 flex flex-col items-center">
+        <div className="overflow-hidden mb-4">
+          <h1 className="text-white text-7xl md:text-9xl font-black tracking-tighter uppercase leading-none animate-[folio-fade-in_1s_ease-out]">
+            FOLIO<span className="text-white/20">.</span>
+          </h1>
+        </div>
+        
+        <div className="overflow-hidden">
+          <p className="text-white/40 text-[10px] md:text-xs font-black uppercase tracking-[0.6em] mb-12 animate-[folio-sub-in_1s_ease-out_0.3s_both]">
+            THE BOOKS SHOULD HAVE FOUND YOU SO
+          </p>
+        </div>
 
-      <div className="folio-title-anim animate-float z-10" style={{ display: 'flex', alignItems: 'baseline', gap: '2px', animationDuration: '4s' }}>
-        <span className="text-gradient" style={{
-          fontWeight: 800,
-          fontSize: 'clamp(3.5rem, 10vw, 6rem)',
-          letterSpacing: '-4px',
-          lineHeight: 1,
-          textTransform: 'uppercase'
-        }}>Folio.</span>
+        <div className="w-64 md:w-96 h-[1px] bg-white/10 relative overflow-hidden">
+          <div 
+            className="absolute top-0 left-0 h-full bg-white transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        
+        <div className="mt-4 flex justify-between w-64 md:w-96">
+            <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">EST. 2026</span>
+            <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">{Math.round(progress)}%</span>
+            <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">LOADING</span>
+        </div>
       </div>
 
-      <p className="folio-sub-anim z-10" style={{
-        fontWeight: 800,
-        fontSize: 'clamp(0.65rem, 2vw, 0.85rem)',
-        color: '#6B7280',
-        letterSpacing: '0.2em',
-        margin: 0,
-        textAlign: 'center',
-        textTransform: 'uppercase'
-      }}>
-        The books should have found you so
-      </p>
-
-      <div className="folio-sub-anim z-10" style={{
-        width: 'clamp(150px, 30vw, 250px)',
-        height: '2px',
-        backgroundColor: '#E5E7EB',
-        borderRadius: '9999px',
-        overflow: 'hidden',
-        marginTop: '1rem',
-        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)'
-      }}>
-        <div style={{
-          height: '100%',
-          width: `${Math.min(progress, 100)}%`,
-          backgroundColor: '#000000',
-          borderRadius: '9999px',
-          transition: 'width 0.03s linear'
-        }} />
+      <div className="absolute bottom-12 left-12 flex flex-col gap-2 opacity-20">
+        <div className="w-12 h-0.5 bg-white" />
+        <div className="w-8 h-0.5 bg-white" />
+        <div className="w-16 h-0.5 bg-white" />
       </div>
     </div>
   )

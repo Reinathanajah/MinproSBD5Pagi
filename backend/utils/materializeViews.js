@@ -101,7 +101,7 @@ export const getHomepageBooks = async () => {
   const since14 = new Date(Date.now() - FOURTEEN_DAYS)
   let recent = await Book.find({ status: 'active', registeredAt: { $gte: since14 } })
     .select('title author coverImage genre accessType price weightedRating registeredAt')
-  
+
   if (recent.length === 0) {
     recent = await Book.find({ status: 'active' })
       .limit(20)

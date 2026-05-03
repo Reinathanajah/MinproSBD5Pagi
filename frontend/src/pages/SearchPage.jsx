@@ -63,93 +63,114 @@ export default function SearchPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const pageTitle = hot ? 'HOT BOOKS' : sort === 'commented' ? 'MOST DISCUSSED' : sort === 'viewed' ? 'MOST VIEWED' : q ? `HASIL: "${q}"` : genre ? `GENRE: ${genre}` : 'KATALOG BUKU'
+  const pageTitle = hot ? 'HOT BOOKS' : sort === 'commented' ? 'DISCUSSED' : sort === 'viewed' ? 'VIEWED' : q ? `RESULTS: "${q}"` : genre ? `GENRE: ${genre}` : 'CATALOG'
+
+  if (loading && books.length === 0) return (
+    <div className="flex flex-col items-center justify-center min-h-screen animate-[folio-fade-in_1s_ease-out]">
+        <div className="text-[10px] font-black text-black/20 uppercase tracking-[1em] animate-pulse">EXTRACTING METADATA...</div>
+        <div className="w-48 h-[1px] bg-black/5 mt-8 relative overflow-hidden">
+            <div className="absolute inset-0 bg-black animate-[hero-progress_2s_ease-in-out_infinite]" />
+        </div>
+    </div>
+  )
 
   return (
-    <div className="min-h-screen bg-mesh-gradient py-12">
+    <div className="min-h-screen pb-32">
       <div className="container-main">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+        {/* Cinematic Massive Header */}
+        <div className="pt-20 pb-20 border-b-4 border-black mb-16 flex flex-col md:flex-row items-center md:items-end justify-between gap-8">
+            <div>
+              <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.5em] mb-4">ARCHIVE EXPLORATION</p>
+              <h1 className="text-6xl md:text-9xl font-black text-black uppercase tracking-tighter leading-none italic">
+                {pageTitle}<span className="text-black/10">.</span>
+              </h1>
+            </div>
+            <div className="text-right">
+                <p className="text-5xl font-black text-black tracking-tighter">{total}</p>
+                <p className="text-[9px] font-black text-black/40 uppercase tracking-[0.2em] mt-2">ENTRIES DISCOVERED</p>
+            </div>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-16">
+          {/* Refined Sidebar Filter */}
           {!hot && !sort && (
-            <aside className="w-full lg:w-72 flex-shrink-0">
-              <div className="glass-panel rounded-[3rem] p-8 sticky top-32">
-                <h3 className="font-extrabold text-lg text-black mb-6 uppercase tracking-tighter text-gradient">FILTER PENCARIAN</h3>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-500 mb-2 uppercase tracking-widest">JUDUL / PENULIS</label>
+            <aside className="w-full lg:w-80 flex-shrink-0">
+              <div className="glass-panel p-10 rounded-[3rem] sticky top-32">
+                <h3 className="text-xl font-black text-black uppercase tracking-tighter mb-10 border-b-2 border-black/5 pb-4">FILTERS</h3>
+                <div className="space-y-10">
+                  <div className="space-y-4">
+                    <label className="text-[9px] font-black text-black/30 uppercase tracking-[0.3em]">KEYWORDS</label>
                     <input
                       value={query}
                       onChange={e => setQuery(e.target.value)}
                       onKeyDown={e => e.key === 'Enter' && applyFilter()}
-                      placeholder="CARI..."
-                      className="input-field w-full bg-white/60 backdrop-blur-md border-white/50 rounded-full px-5 py-3 text-sm font-semibold text-black placeholder-gray-400 outline-none focus:ring-2 focus:ring-black/5 transition-all shadow-sm"
+                      placeholder="TITLE / AUTHOR"
+                      className="w-full bg-black/5 border-2 border-transparent focus:border-black/10 focus:bg-white px-8 py-4 rounded-2xl outline-none transition-all uppercase font-black text-xs placeholder:text-black/20"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-500 mb-3 uppercase tracking-widest">GENRE</label>
-                    <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto scrollbar-hide pb-2">
+                  <div className="space-y-4">
+                    <label className="text-[9px] font-black text-black/30 uppercase tracking-[0.3em]">CLASSIFICATION</label>
+                    <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => setSelGenre('')}
-                        className={`text-[10px] font-extrabold uppercase tracking-widest px-4 py-2.5 rounded-full transition-all duration-300 border ${!selGenre ? 'bg-black text-white border-black shadow-md shadow-black/20' : 'bg-white/80 text-gray-600 border-gray-200 hover:bg-white hover:text-black hover:border-gray-300 hover:shadow-sm'}`}
-                      >SEMUA</button>
+                        className={`text-[9px] font-black uppercase tracking-widest px-5 py-2.5 rounded-full transition-all border ${!selGenre ? 'bg-black text-white' : 'bg-white text-black/40 border-black/5 hover:bg-black hover:text-white'}`}
+                      >ALL GENRES</button>
                       {GENRES.map(g => (
                         <button
                           key={g}
                           onClick={() => setSelGenre(g === selGenre ? '' : g)}
-                          className={`text-[10px] font-extrabold uppercase tracking-widest px-4 py-2.5 rounded-full transition-all duration-300 border ${selGenre === g ? 'bg-black text-white border-black shadow-md shadow-black/20' : 'bg-white/80 text-gray-600 border-gray-200 hover:bg-white hover:text-black hover:border-gray-300 hover:shadow-sm'}`}
+                          className={`text-[9px] font-black uppercase tracking-widest px-5 py-2.5 rounded-full transition-all border ${selGenre === g ? 'bg-black text-white' : 'bg-white text-black/40 border-black/5 hover:bg-black hover:text-white'}`}
                         >{g}</button>
                       ))}
                     </div>
                   </div>
-                  <button onClick={applyFilter} className="btn-primary w-full mt-4">TERAPKAN FILTER</button>
+                  <button onClick={applyFilter} className="w-full bg-black text-white font-black uppercase tracking-widest py-5 rounded-full hover:bg-neutral-800 transition-all shadow-2xl shadow-black/20 mt-6">
+                    UPDATE RESULTS
+                  </button>
                 </div>
               </div>
             </aside>
           )}
 
+          {/* Main Grid */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-end justify-between mb-8 border-b border-gray-200/50 pb-4">
-              <div className="animate-float">
-                <h1 className="text-3xl lg:text-4xl font-extrabold text-black uppercase tracking-tighter text-gradient">{pageTitle}</h1>
-                <p className="text-[10px] font-bold text-gray-500 mt-2 uppercase tracking-widest">{total} BUKU DITEMUKAN</p>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-32">
-                <div className="w-10 h-10 border-4 border-white border-t-black rounded-full animate-spin shadow-lg" />
-              </div>
-            ) : books.length === 0 ? (
-              <div className="text-center py-32 glass-panel rounded-[3rem]">
-                <div className="text-6xl mb-6 opacity-80 animate-float">😶</div>
-                <p className="text-black font-extrabold text-2xl mb-2 uppercase tracking-tighter text-gradient">TIDAK ADA HASIL</p>
-                <p className="text-gray-500 text-sm font-bold uppercase tracking-widest">COBA KATA KUNCI ATAU FILTER YANG BERBEDA</p>
+            {books.length === 0 ? (
+              <div className="text-center py-40 glass-panel rounded-[4rem]">
+                <div className="text-8xl mb-8 animate-float">📭</div>
+                <h2 className="text-3xl font-black text-black uppercase tracking-tighter mb-4">NO ARCHIVES FOUND</h2>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">TRY ADJUSTING YOUR FILTERS OR KEYWORDS</p>
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-                  {books.map(b => <BookCard key={b._id} book={b} />)}
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+                  {books.map(b => (
+                    <div key={b._id} className="animate-[folio-sub-in_0.5s_ease-out]">
+                      <BookCard book={b} />
+                    </div>
+                  ))}
                 </div>
 
+                {/* Refined Pagination */}
                 {pages > 1 && (
-                  <div className="flex justify-center items-center gap-4 sm:gap-8 mt-16">
+                  <div className="flex justify-center items-center gap-10 mt-24 pt-12 border-t-2 border-black/5">
                     <button
                       onClick={() => goPage(Math.max(1, page - 1))}
                       disabled={page === 1}
-                      className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3"
+                      className="text-[10px] font-black uppercase tracking-widest disabled:opacity-20 hover:scale-110 transition-transform"
                     >
-                      &larr; SEBELUMNYA
+                      &larr; PREVIOUS
                     </button>
                     
-                    <span className="text-black font-extrabold uppercase tracking-widest text-xs sm:text-sm bg-white/60 backdrop-blur-md px-6 py-3 rounded-full border border-gray-200">
-                      HALAMAN {page} DARI {pages}
-                    </span>
+                    <div className="px-10 py-4 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-2xl">
+                      PAGE {page} OF {pages}
+                    </div>
 
                     <button
                       onClick={() => goPage(Math.min(pages, page + 1))}
                       disabled={page === pages}
-                      className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3"
+                      className="text-[10px] font-black uppercase tracking-widest disabled:opacity-20 hover:scale-110 transition-transform"
                     >
-                      SELANJUTNYA &rarr;
+                      NEXT &rarr;
                     </button>
                   </div>
                 )}

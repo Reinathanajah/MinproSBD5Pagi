@@ -2,29 +2,49 @@ import React from 'react'
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-mesh-gradient py-20">
+    <div className="min-h-screen pb-20">
       <div className="container-main">
-        <div className="glass-panel p-10 sm:p-20 rounded-[4rem] text-center max-w-5xl mx-auto shadow-2xl">
-          <h1 className="text-4xl sm:text-7xl font-extrabold text-black uppercase tracking-tighter text-gradient mb-8">ABOUT FOLIO.</h1>
-          <div className="h-2 w-32 bg-black mx-auto mb-12 rounded-full" />
-          <p className="text-gray-600 text-lg sm:text-2xl font-medium leading-relaxed uppercase tracking-wide">
-            Folio adalah perpustakaan digital masa depan yang dirancang khusus untuk generasi Z. 
-            Kami bukan sekadar aplikasi, melainkan ekosistem literasi modern.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 text-left">
-            <div className="p-8 bg-white/50 rounded-3xl border border-white/50">
-              <h3 className="font-black text-xl mb-4 uppercase">VISI KAMI</h3>
-              <p className="text-sm text-gray-500 font-bold uppercase tracking-widest leading-loose">Menjadikan membaca sebagai gaya hidup yang estetik dan esensial di era digital.</p>
-            </div>
-            <div className="p-8 bg-white/50 rounded-3xl border border-white/50">
-              <h3 className="font-black text-xl mb-4 uppercase">KURASI TERBAIK</h3>
-              <p className="text-sm text-gray-500 font-bold uppercase tracking-widest leading-loose">Setiap buku dalam katalog kami telah melalui proses kurasi ketat untuk kualitas terbaik.</p>
-            </div>
-            <div className="p-8 bg-white/50 rounded-3xl border border-white/50">
-              <h3 className="font-black text-xl mb-4 uppercase">AKSES TANPA BATAS</h3>
-              <p className="text-sm text-gray-500 font-bold uppercase tracking-widest leading-loose">Baca kapan saja, di mana saja, dengan antarmuka yang bersih dan bebas gangguan.</p>
-            </div>
+        {/* Massive Cinematic Header */}
+        <div className="pt-20 pb-32 text-center overflow-hidden">
+          <div className="relative inline-block">
+             <div className="absolute -inset-4 bg-black/5 blur-3xl rounded-full" />
+             <h1 className="relative text-7xl md:text-[10rem] font-black text-black leading-[0.8] uppercase tracking-tighter italic animate-[folio-fade-in_1s_ease-out]">
+                THE<br/>VISION<span className="text-black/10">.</span>
+             </h1>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-32">
+          <div className="glass-panel p-12 md:p-20 rounded-[4rem] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-black/5 rounded-full -mr-16 -mt-16" />
+            <h2 className="text-3xl font-black text-black uppercase tracking-tighter mb-8 border-b-2 border-black/5 pb-6">BEYOND A LIBRARY</h2>
+            <p className="text-lg md:text-xl font-bold text-gray-500 uppercase tracking-widest leading-relaxed">
+              Folio is the next-generation digital ecosystem designed for those who seek knowledge with style. 
+              We bridge the gap between classical literature and modern digital aesthetics.
+            </p>
+          </div>
+          <div className="relative aspect-video rounded-[3rem] overflow-hidden shadow-2xl group">
+            <img 
+                src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1200&q=80" 
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100" 
+                alt="Library"
+            />
+            <div className="absolute inset-0 bg-black/20" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {[
+            { title: 'CURATED CORE', desc: 'Every title in our system is hand-picked for quality and relevance.' },
+            { title: 'BOUNDLESS ACCESS', desc: 'Read across any device with zero friction and pure focus.' },
+            { title: 'MODERN LITERACY', desc: 'Redefining the reading experience for the digital generation.' }
+          ].map(f => (
+            <div key={f.title} className="glass-panel p-12 rounded-[3rem] hover:-translate-y-4 transition-all duration-500 group border-2 border-transparent hover:border-black/5">
+              <div className="w-12 h-1 bg-black mb-8 group-hover:w-24 transition-all duration-500" />
+              <h3 className="text-xl font-black text-black uppercase tracking-tighter mb-4">{f.title}</h3>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] leading-loose">{f.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

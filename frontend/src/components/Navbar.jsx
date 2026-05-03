@@ -1,116 +1,115 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 
 const SearchIcon = () => (
-  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
   </svg>
 )
 
 const UserIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={3} viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
   </svg>
 )
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth()
-  const [query, setQuery]         = useState('')
-  const [menuOpen, setMenuOpen]   = useState(false)
+  const [query, setQuery] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleSearch = (e) => {
     e.preventDefault()
     if (query.trim()) navigate(`/search?q=${encodeURIComponent(query.trim())}`)
   }
 
-  const trending = [
-    { label: 'NOVEL TERLARIS', url: '/search?sort=viewed' },
-    { label: 'BUKU ANAK',      url: '/search?genre=Anak-anak' },
-    { label: 'SELF-HELP',      url: '/search?genre=Self-Help' },
-    { label: 'SAINS & TEKNO',  url: '/search?genre=Sains & Teknologi' },
-    { label: 'BIOGRAFI',       url: '/search?genre=Biografi' }
+  const navLinks = [
+    { to: '/', label: 'HOME' },
+    { to: '/search', label: 'CATALOG' },
+    { to: '/search?hot=1', label: 'HOT BOOKS' },
+    { to: '/search?sort=commented', label: 'DISCUSSED' },
+    { to: '/search?sort=viewed', label: 'VIEWED' }
   ]
 
   return (
-    <header className="bg-white/80 backdrop-blur-xl border-b border-white/50 sticky top-0 z-50 shadow-sm shadow-black/5">
-      <div className="bg-black/5 backdrop-blur-md">
-        <div className="container-main flex justify-end gap-6 py-2">
-          <Link to="/search?genre=Promo" className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors">PROMO</Link>
-          <Link to="/about" className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors">TENTANG KAMI</Link>
-          <Link to="/contact" className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors">HUBUNGI KAMI</Link>
+    <header className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${scrolled ? 'py-2' : 'py-6'}`}>
+      {/* Top Utility Bar */}
+      {!scrolled && (
+        <div className="container-main flex justify-end gap-6 mb-4 animate-[folio-sub-in_0.5s_ease]">
+          {['PROMO', 'ABOUT', 'CONTACT'].map(label => (
+            <Link key={label} to={label === 'PROMO' ? '/search?genre=Promo' : `/${label.toLowerCase()}`} className="text-[9px] font-black text-black/40 hover:text-black uppercase tracking-[0.3em] transition-colors">{label}</Link>
+          ))}
         </div>
-      </div>
+      )}
 
-      <div className="container-main">
-        <div className="flex items-center justify-between gap-4 py-4">
-          <Link to="/" className="flex-shrink-0 animate-float" style={{animationDuration: '8s'}}>
-            <span style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
-              <span className="font-extrabold text-2xl lg:text-3xl leading-none text-transparent bg-clip-text bg-gradient-to-r from-black to-gray-500 tracking-tighter uppercase drop-shadow-sm">FOLIO</span>
-              <span className="font-extrabold text-2xl lg:text-3xl leading-none text-black">.</span>
-            </span>
+      <div className={`container-main transition-all duration-500 ${scrolled ? 'max-w-6xl' : ''}`}>
+        <div className={`glass-panel rounded-full px-6 py-3 flex items-center justify-between gap-4 border-2 transition-all duration-500 ${scrolled ? 'bg-white/90 shadow-2xl border-black/5' : 'bg-white/40 border-transparent shadow-xl shadow-black/5'}`}>
+          
+          <Link to="/" className="flex items-center gap-1 group px-2">
+            <span className="font-black text-2xl tracking-tighter uppercase transition-transform group-hover:scale-105">FOLIO<span className="text-black/40">.</span></span>
           </Link>
 
-          <form onSubmit={handleSearch} className="flex-1 max-w-xl mx-auto hidden md:block">
-            <div className="flex items-center bg-white/60 backdrop-blur-md border border-white/50 shadow-sm rounded-full px-5 py-2.5 gap-3 focus-within:ring-4 focus-within:ring-black/5 focus-within:bg-white transition-all">
+          <form onSubmit={handleSearch} className="flex-1 max-w-lg hidden md:block relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
               <SearchIcon />
-              <input
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                placeholder="Cari judul atau penulis..."
-                className="flex-1 text-sm font-semibold outline-none text-black placeholder-gray-400 bg-transparent"
-              />
-              {query && (
-                <button type="button" onClick={() => setQuery('')} className="text-gray-400 hover:text-black font-extrabold hover:scale-110 transition-transform">X</button>
-              )}
             </div>
-            <div className="flex gap-3 mt-2 pl-4 flex-wrap">
-              {trending.slice(0, 4).map(t => (
-                <button
-                  key={t.label} type="button"
-                  onClick={() => navigate(t.url)}
-                  className="text-[9px] lg:text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-black transition-colors"
-                >{t.label}</button>
-              ))}
-            </div>
+            <input
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="SEARCH CATALOG..."
+              className="w-full bg-black/5 border-2 border-transparent rounded-full pl-12 pr-6 py-2.5 text-[11px] font-black outline-none focus:bg-white focus:border-black/10 focus:shadow-xl transition-all uppercase tracking-widest placeholder:text-black/40 text-black"
+            />
           </form>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <nav className="hidden lg:flex items-center gap-8 px-4">
+            {navLinks.map(link => (
+              <Link 
+                key={link.label} 
+                to={link.to} 
+                className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:text-black hover:scale-110 ${location.pathname === link.to ? 'text-black border-b-2 border-black' : 'text-black/40'}`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-3">
             {user ? (
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex items-center gap-2 btn-secondary py-2 px-5 shadow-sm"
+                  className="flex items-center gap-3 bg-black text-white px-5 py-2.5 rounded-full hover:scale-105 transition-transform shadow-xl shadow-black/20"
                 >
                   <UserIcon />
-                  <span className="text-sm font-bold hidden sm:block uppercase">{user.fullName.split(' ')[0]}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest hidden sm:block">{user.fullName.split(' ')[0]}</span>
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-56 glass-panel rounded-2xl overflow-hidden z-50 flex flex-col p-2 animate-[folio-sub-in_0.3s_ease]">
-                    <Link to="/profile"  onClick={() => setMenuOpen(false)} className="px-5 py-3 text-sm font-bold text-gray-600 rounded-xl uppercase tracking-widest hover:bg-white/80 hover:text-black transition-colors">PROFIL SAYA</Link>
-                    <Link to="/library"  onClick={() => setMenuOpen(false)} className="px-5 py-3 text-sm font-bold text-gray-600 rounded-xl uppercase tracking-widest hover:bg-white/80 hover:text-black transition-colors">PERPUSTAKAAN</Link>
-                    {isAdmin && <Link to="/admin" onClick={() => setMenuOpen(false)} className="px-5 py-3 text-sm font-bold text-black rounded-xl uppercase tracking-widest hover:bg-white/80 transition-colors">PANEL ADMIN</Link>}
-                    <button onClick={() => { logout(); setMenuOpen(false) }} className="w-full text-left px-5 py-3 mt-2 text-sm font-bold text-white rounded-xl bg-black uppercase tracking-widest hover:bg-red-500 shadow-lg transition-colors">KELUAR</button>
+                  <div className="absolute right-0 top-full mt-4 w-56 glass-panel rounded-3xl overflow-hidden shadow-2xl border-2 border-black/5 p-2 animate-[folio-sub-in_0.3s_ease]">
+                    <Link to="/profile" onClick={() => setMenuOpen(false)} className="block px-6 py-4 text-[10px] font-black text-black/40 hover:text-black hover:bg-black/5 rounded-2xl transition-all uppercase tracking-widest">MY PROFILE</Link>
+                    <Link to="/library" onClick={() => setMenuOpen(false)} className="block px-6 py-4 text-[10px] font-black text-black/40 hover:text-black hover:bg-black/5 rounded-2xl transition-all uppercase tracking-widest">MY LIBRARY</Link>
+                    {isAdmin && <Link to="/admin" onClick={() => setMenuOpen(false)} className="block px-6 py-4 text-[10px] font-black text-red-500 hover:bg-red-50 rounded-2xl transition-all uppercase tracking-widest">ADMIN PANEL</Link>}
+                    <button onClick={() => { logout(); setMenuOpen(false) }} className="w-full text-left px-6 py-4 mt-2 text-[10px] font-black bg-black text-white rounded-2xl hover:bg-neutral-800 shadow-xl transition-all uppercase tracking-widest">LOGOUT</button>
                   </div>
                 )}
               </div>
             ) : (
               <div className="flex gap-2">
-                <Link to="/login"    className="btn-secondary text-xs px-4 py-2 lg:px-6 lg:py-2.5 shadow-sm">MASUK</Link>
-                <Link to="/register" className="btn-primary  text-xs px-4 py-2 lg:px-6 lg:py-2.5 shadow-md">DAFTAR</Link>
+                <Link to="/login" className="px-6 py-3 text-[10px] font-black uppercase tracking-widest hover:text-black transition-colors text-black/40">LOGIN</Link>
+                <Link to="/register" className="bg-black text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-black/20 hover:scale-105 transition-transform">JOIN</Link>
               </div>
             )}
           </div>
         </div>
-
-        <nav className="flex gap-6 lg:gap-8 pb-4 pt-1 overflow-x-auto scrollbar-hide">
-          <Link to="/" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">BERANDA</Link>
-          <Link to="/search" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">KATALOG</Link>
-          <Link to="/search?hot=1" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">HOT BOOKS</Link>
-          <Link to="/search?sort=commented" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">MOST DISCUSSED</Link>
-          <Link to="/search?sort=viewed" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">MOST VIEWED</Link>
-        </nav>
       </div>
     </header>
   )

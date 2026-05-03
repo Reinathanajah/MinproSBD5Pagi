@@ -34,9 +34,9 @@ export default function App() {
     <>
       {!introDone && <IntroScreen onDone={() => setIntroDone(true)} />}
 
-      <div style={{ visibility: introDone ? 'visible' : 'hidden' }} className="flex flex-col min-h-screen">
+      <div style={{ visibility: introDone ? 'visible' : 'hidden' }} className="flex flex-col min-h-screen bg-mesh-gradient">
         <Navbar />
-        <main className="flex-1">
+        <main className="flex-grow pt-32">
           <Routes>
             <Route path="/"         element={<HomePage />} />
             <Route path="/search"   element={<SearchPage />} />

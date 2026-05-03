@@ -41,10 +41,13 @@ export default function HomePage() {
   }, [homepage])
 
   return (
-    <div className="min-h-screen bg-mesh-gradient">
+    <div className="min-h-screen">
       {loading ? (
-        <div className="flex justify-center items-center h-96">
-          <div className="w-10 h-10 border-4 border-neutral-200 border-t-black rounded-full animate-spin" />
+        <div className="flex flex-col items-center justify-center py-64 animate-[folio-fade-in_1s_ease-out]">
+          <div className="text-[10px] font-black text-black/20 uppercase tracking-[1em] animate-pulse">SIFTING THROUGH ARCHIVES...</div>
+          <div className="w-48 h-[1px] bg-black/5 mt-8 relative overflow-hidden">
+             <div className="absolute inset-0 bg-black animate-[hero-progress_2s_ease-in-out_infinite]" />
+          </div>
         </div>
       ) : (
         <>
@@ -64,34 +67,55 @@ export default function HomePage() {
                       className="absolute inset-0 w-full h-full object-cover animate-[mesh-pulse_30s_infinite]"
                     />
                   )}
-                  <div className="relative container-main h-full flex flex-col justify-center items-start gap-6 z-20">
-                    <div className="flex gap-3 animate-float">
-                      {book.genre?.slice(0, 3).map(g => (
-                        <span key={g} className="bg-white/20 backdrop-blur-xl border border-white/30 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-lg">{g}</span>
-                      ))}
+                  <div className="relative container-main h-full flex flex-col md:flex-row items-center justify-between gap-12 z-20">
+                    <div className="flex-1 text-left">
+                      <div className="flex gap-3 mb-8 animate-float">
+                        {book.genre?.slice(0, 3).map(g => (
+                          <span key={g} className="bg-white/10 backdrop-blur-xl border border-white/20 text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.2em] shadow-xl">{g}</span>
+                        ))}
+                      </div>
+                      <div className="max-w-4xl space-y-6">
+                        <div className="overflow-hidden">
+                          <h1 className="text-6xl sm:text-8xl md:text-[9rem] font-black text-white leading-[0.85] uppercase tracking-tighter drop-shadow-2xl italic animate-[folio-fade-in_1s_ease-out]">
+                            {book.title}
+                          </h1>
+                        </div>
+                        <div className="flex items-center gap-6">
+                          <div className="h-0.5 flex-1 bg-gradient-to-r from-white to-transparent opacity-50" />
+                          <p className="text-white font-black text-sm sm:text-lg uppercase tracking-[0.5em] whitespace-nowrap">{book.author}</p>
+                        </div>
+                      </div>
+                      <div className="mt-12 flex flex-wrap gap-4">
+                        <button onClick={() => navigate(`/book/${book._id}`)} className="bg-white text-black font-black uppercase tracking-widest px-12 py-5 rounded-full hover:bg-black hover:text-white hover:scale-105 transition-all duration-500 shadow-2xl shadow-white/10 group">
+                          READ NOW <span className="inline-block group-hover:translate-x-2 transition-transform">&rarr;</span>
+                        </button>
+                        <button onClick={() => navigate('/search')} className="bg-white/5 backdrop-blur-xl border border-white/10 text-white font-black uppercase tracking-widest px-12 py-5 rounded-full hover:bg-white hover:text-black transition-all duration-500">
+                          EXPLORE
+                        </button>
+                      </div>
                     </div>
-                    <div className="max-w-4xl space-y-4">
-                      <h1 className="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.95] uppercase tracking-tighter drop-shadow-2xl italic">
-                        {book.title}
-                      </h1>
-                      <div className="h-1.5 w-32 bg-white rounded-full shadow-lg" />
-                      <p className="text-white/80 text-xl sm:text-3xl font-medium uppercase tracking-[0.3em] drop-shadow-lg">{book.author}</p>
-                    </div>
-                    <div className="mt-10 flex gap-4">
-                      <button onClick={() => navigate(`/book/${book._id}`)} className="bg-white text-black font-black uppercase tracking-widest px-10 py-5 rounded-full hover:bg-black hover:text-white hover:scale-105 transition-all duration-500 shadow-2xl shadow-white/20">
-                        READ NOW
-                      </button>
-                      <button onClick={() => navigate('/search')} className="bg-white/10 backdrop-blur-md border border-white/30 text-white font-black uppercase tracking-widest px-10 py-5 rounded-full hover:bg-white hover:text-black transition-all duration-500">
-                        BROWSE ALL
-                      </button>
+
+                    <div className="hidden lg:block flex-shrink-0 relative group perspective-1000">
+                      <div className="absolute -inset-10 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-all duration-1000" />
+                      <div className="relative w-[300px] aspect-[3/4] rounded-3xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] transform rotate-y-12 group-hover:rotate-y-0 transition-all duration-1000 border border-white/20">
+                        <img src={book.coverImage} alt={book.title} className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-1000" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                          <p className="text-white font-black text-lg uppercase tracking-tighter">{book.title}</p>
+                          <p className="text-white/60 text-[10px] font-bold uppercase tracking-widest">{book.author}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
-              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4 z-30 bg-black/20 backdrop-blur-xl px-6 py-4 rounded-full border border-white/10">
-                {homepage.map((_, i) => (
-                  <button key={i} onClick={() => setSlide(i)} className={`h-2 transition-all duration-500 rounded-full ${i === slide ? 'bg-white w-12' : 'bg-white/30 w-2 hover:bg-white/50'}`} />
-                ))}
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-30">
+                <div className="flex gap-4 bg-black/20 backdrop-blur-xl px-6 py-4 rounded-full border border-white/10 relative overflow-hidden">
+                  {homepage.map((_, i) => (
+                    <button key={i} onClick={() => setSlide(i)} className={`h-2 transition-all duration-500 rounded-full ${i === slide ? 'bg-white w-12' : 'bg-white/30 w-2 hover:bg-white/50'}`} />
+                  ))}
+                  {/* Progress Bar Line */}
+                  <div className="absolute bottom-0 left-0 h-1 bg-white/50 animate-[hero-progress_4s_linear_infinite]" key={slide} />
+                </div>
               </div>
             </section>
           )}

@@ -12,24 +12,48 @@ export default function LibraryPage() {
       .catch(() => setLoading(false))
   }, [])
 
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-mesh-gradient">
+      <div className="w-16 h-16 border-4 border-black/10 border-t-black rounded-full animate-spin mb-4" />
+      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40">Opening Vault...</p>
+    </div>
+  )
+
   return (
-    <div className="min-h-screen bg-mesh-gradient py-12">
+    <div className="min-h-screen pb-32">
       <div className="container-main">
-        <h1 className="text-3xl lg:text-4xl font-extrabold text-black mb-10 uppercase tracking-tighter text-gradient animate-float inline-block">PERPUSTAKAAN SAYA</h1>
-        
-        {loading ? (
-          <div className="flex justify-center py-32">
-            <div className="w-10 h-10 border-4 border-white border-t-black rounded-full animate-spin shadow-lg" />
+        {/* Cinematic Header */}
+        <div className="pt-20 pb-20">
+          <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-8 border-b-4 border-black pb-12">
+            <div>
+              <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.5em] mb-4">PERSONAL COLLECTION</p>
+              <h1 className="text-6xl md:text-8xl font-black text-black uppercase tracking-tighter leading-none italic">
+                MY LIBRARY<span className="text-black/10">.</span>
+              </h1>
+            </div>
+            <div className="glass-panel px-10 py-6 rounded-3xl text-center">
+                <p className="text-4xl font-black text-black leading-none">{library.length}</p>
+                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-2">TITLES ACQUIRED</p>
+            </div>
           </div>
-        ) : library.length === 0 ? (
-          <div className="text-center py-32 glass-panel rounded-[3rem]">
-            <div className="text-6xl mb-6 opacity-80 animate-float">📚</div>
-            <p className="text-black font-extrabold text-2xl mb-2 uppercase tracking-tighter">PERPUSTAKAAN KOSONG</p>
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">CHECKOUT BUKU DARI KATALOG UNTUK MULAI MEMBACA</p>
+        </div>
+        
+        {library.length === 0 ? (
+          <div className="text-center py-40 glass-panel rounded-[4rem]">
+            <div className="text-8xl mb-8 animate-float">📚</div>
+            <h2 className="text-3xl font-black text-black uppercase tracking-tighter mb-4">YOUR VAULT IS EMPTY</h2>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-12">BEGIN YOUR JOURNEY BY EXPLORING THE CATALOG</p>
+            <button className="bg-black text-white px-12 py-5 rounded-full font-black uppercase tracking-widest shadow-2xl shadow-black/20 hover:scale-105 transition-transform">
+                EXPLORE CATALOG &rarr;
+            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 lg:gap-6">
-            {library.map(b => b.bookId && <BookCard key={b.bookId._id} book={b.bookId} />)}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8">
+            {library.map(b => b.bookId && (
+                <div key={b.bookId._id} className="animate-[folio-sub-in_0.5s_ease-out]">
+                    <BookCard book={b.bookId} />
+                </div>
+            ))}
           </div>
         )}
       </div>

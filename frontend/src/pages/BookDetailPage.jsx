@@ -1,31 +1,29 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import api from '../api/axios.js'
 import StarRating from '../components/StarRating.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { OPTIONAL_ATTR_TYPES } from '../constants/data.js'
 
 export default function BookDetailPage() {
-  const { id }             = useParams()
-  const navigate           = useNavigate()
-  const { user, isAdmin }  = useAuth()
-  const [book, setBook]    = useState(null)
-  const [owned, setOwned]  = useState(false)
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const { user, isAdmin } = useAuth()
+  const [book, setBook] = useState(null)
+  const [owned, setOwned] = useState(false)
   const [loading, setLoading] = useState(true)
   const [comment, setComment] = useState('')
-  const [rating, setRating]   = useState(0)
+  const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
-  const [msg, setMsg]      = useState('')
+  const [msg, setMsg] = useState('')
   const [attrModal, setAttrModal] = useState(false)
-  const [newAttr, setNewAttr]     = useState({ key:'', label:'', type:'other', value:'' })
+  const [newAttr, setNewAttr] = useState({ key: '', label: '', type: 'other', value: '' })
 
   const fetchBook = async () => {
     try {
       const { data } = await api.get(`/books/${id}`)
       setBook(data)
-      try {
-        await api.post(`/books/${id}/click`)
-      } catch (err) {}
+      try { await api.post(`/books/${id}/click`) } catch (err) {}
     } catch { navigate('/') }
     setLoading(false)
   }
@@ -45,10 +43,8 @@ export default function BookDetailPage() {
     try {
       await api.post(`/books/${id}/checkout`)
       setOwned(true)
-      setMsg('Buku berhasil ditambahkan ke perpustakaan Anda!')
-    } catch (e) {
-      setMsg(e.response?.data?.message || 'Gagal checkout')
-    }
+      setMsg('Book added to your library!')
+    } catch (e) { setMsg(e.response?.data?.message || 'Checkout failed') }
   }
 
   const handleComment = async (e) => {
@@ -58,7 +54,7 @@ export default function BookDetailPage() {
       await api.post(`/books/${id}/comment`, { text: comment })
       setComment('')
       await fetchBook()
-    } catch (e) { setMsg(e.response?.data?.message || 'Gagal kirim komentar') }
+    } catch (e) { setMsg(e.response?.data?.message || 'Failed to post comment') }
   }
 
   const handleRate = async (score) => {
@@ -77,216 +73,213 @@ export default function BookDetailPage() {
     } catch {}
   }
 
-  const handleArchive = async () => {
-    if (!window.confirm('Arsipkan buku ini?')) return
-    await api.patch(`/books/${id}/archive`)
-    navigate('/')
-  }
-
-  const handleDelete = async () => {
-    if (!window.confirm('Hapus buku ini? Slot akan didaur ulang.')) return
-    await api.delete(`/books/${id}`)
-    navigate('/')
-  }
-
-  const handleAddAttr = async (e) => {
-    e.preventDefault()
-    try {
-      await api.post(`/books/${id}/attribute`, newAttr)
-      setAttrModal(false)
-      setNewAttr({ key:'', label:'', type:'other', value:'' })
-      await fetchBook()
-    } catch (e) { setMsg(e.response?.data?.message || 'Gagal menambah atribut') }
-  }
-
   if (loading) return (
-    <div className="flex justify-center items-center h-96">
-      <div className="w-10 h-10 border-4 border-white border-t-black rounded-full animate-spin shadow-lg" />
+    <div className="flex flex-col items-center justify-center min-h-screen bg-mesh-gradient">
+      <div className="w-16 h-16 border-4 border-black/10 border-t-black rounded-full animate-spin mb-4" />
+      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/40">Opening Grimoire...</p>
     </div>
   )
   if (!book) return null
 
-  const formatPrice = (p) => p === 0 ? 'Rp 0,00' : `Rp ${p?.toLocaleString('id-ID')}`
-
   return (
-    <div className="min-h-screen bg-mesh-gradient py-10">
-      <div className="container-main">
-        {msg && (
-          <div className="bg-black/90 backdrop-blur-md text-white text-sm font-bold uppercase tracking-widest rounded-full px-6 py-4 mb-8 flex justify-between items-center shadow-lg">
-            {msg} <button onClick={() => setMsg('')} className="ml-4 hover:scale-125 transition-transform">X</button>
-          </div>
-        )}
-
-        <div className="glass-panel rounded-[3rem] overflow-hidden mb-12">
-          <div className="flex flex-col md:flex-row gap-0">
-            <div className="md:w-72 lg:w-96 flex-shrink-0 bg-black/5 flex items-center justify-center p-12">
-              <img
-                src={book.coverImage}
-                alt={book.title}
-                className="w-full max-w-[240px] rounded-2xl shadow-2xl shadow-black/30 object-cover aspect-[3/4] animate-float"
-                onError={e => { e.target.src = 'https://via.placeholder.com/200x267?text=No+Cover' }}
-              />
+    <div className="min-h-screen bg-white">
+      {/* Cinematic Banner */}
+      <div className="relative h-[60vh] md:h-[80vh] overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src={book.coverImage} className="w-full h-full object-cover blur-3xl scale-110 opacity-30" alt="" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent" />
+        </div>
+        
+        <div className="container-main relative h-full flex flex-col md:flex-row items-center md:items-end justify-center md:justify-start gap-12 pb-20 z-10">
+          {/* Main Cover */}
+          <div className="w-64 md:w-96 flex-shrink-0 relative group perspective-1000">
+            <div className="absolute -inset-6 bg-black/5 rounded-[3rem] blur-2xl group-hover:bg-black/10 transition-all duration-700" />
+            <img 
+              src={book.coverImage} 
+              className="w-full aspect-[2/3] object-cover rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] transform rotate-y-6 group-hover:rotate-y-0 transition-all duration-1000 border-8 border-white/50 backdrop-blur-xl" 
+              alt={book.title} 
+            />
+            <div className="absolute top-6 left-6 flex flex-col gap-2">
+                {book.shelf === 'hot' && <span className="bg-red-500 text-white text-[8px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-xl animate-pulse">HOT SHELF</span>}
+                <span className={`text-[8px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-xl ${book.accessType === 'free' ? 'bg-white text-black' : 'bg-black text-white'}`}>
+                    {book.accessType === 'free' ? 'FREE' : 'PREMIUM'}
+                </span>
             </div>
+          </div>
 
-            <div className="flex-1 p-8 lg:p-12 flex flex-col justify-center relative">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gray-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 -z-10 pointer-events-none"></div>
-              
-              <div className="flex flex-wrap gap-2 mb-4">
-                {book.genre?.map(g => <span key={g} className="bg-white/60 border border-white/50 text-gray-600 text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-sm">{g}</span>)}
-                {book.shelf === 'hot' && <span className="bg-red-500 text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-md shadow-red-500/20">HOT</span>}
-                {book.accessType === 'free' ? <span className="badge-free shadow-sm">GRATIS</span> : <span className="badge-sale shadow-md">BERBAYAR</span>}
-              </div>
-
-              <h1 className="text-3xl lg:text-5xl font-extrabold text-black mb-2 leading-tight uppercase tracking-tighter text-gradient drop-shadow-sm">{book.title}</h1>
-              <p className="text-gray-500 font-extrabold uppercase tracking-widest text-sm mb-6">{book.author}</p>
-
-              <StarRating score={book.averageRating || 0} total={book.totalRatings || 0} size="lg" />
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8 mb-8">
-                <Attr label="PENERBIT"      value={book.publisher} />
-                <Attr label="TAHUN RILIS"   value={book.releaseYear} />
-                <Attr label="JUMLAH HALAMAN" value={`${book.pageCount} HLM`} />
-                <Attr label="ISBN"          value={book.isbn} />
-                <Attr label="SHELF"         value={book.shelf === 'hot' ? 'HOT SHELF' : 'COLD SHELF'} />
-                <Attr label="PENAYANGAN"    value={`${book.uniqueViewers || 0} PEMBACA`} />
-                {book.optionalAttributes?.map(a => (
-                  <Attr key={a.key} label={a.label} value={String(a.value || '-')} />
-                ))}
-              </div>
-
-              <div className="border-t border-gray-200/50 pt-8 mt-auto">
-                {book.accessType === 'free'
-                  ? <p className="text-black font-extrabold text-3xl mb-6 uppercase tracking-tighter text-gradient">GRATIS</p>
-                  : <p className="text-black font-extrabold text-3xl mb-6 tracking-tighter text-gradient">{formatPrice(book.price)}</p>}
-
-                <div className="flex flex-wrap gap-4">
-                  <button 
-                    onClick={() => window.open(book.driveLink || 'https://drive.google.com/file/d/1Gs2lkAelCje1xCGzRpcgSO12ZGHhe-17/view?usp=sharing', '_blank')} 
-                    className="btn-primary shadow-xl"
-                  >
-                    BACA BUKU
-                  </button>
-
-                  {owned
-                    ? <button onClick={() => navigate('/library')} className="btn-secondary shadow-sm bg-white/60">KE PERPUSTAKAAN</button>
-                    : <button onClick={handleCheckout} className="btn-secondary shadow-sm bg-white/60">
-                        {book.accessType === 'free' ? 'KLAIM GRATIS' : 'CHECKOUT'}
-                      </button>}
-
-                  {isAdmin && (
-                    <>
-                      <button onClick={handleArchive} className="btn-secondary bg-white/60 text-red-600">ARSIPKAN</button>
-                      <button onClick={handleDelete}  className="btn-danger">HAPUS</button>
-                      <button onClick={() => setAttrModal(true)} className="btn-secondary bg-white/60">+ ATRIBUT</button>
-                    </>
-                  )}
+          <div className="text-center md:text-left flex-1 max-w-4xl">
+            <p className="text-[10px] md:text-xs font-black text-black/40 uppercase tracking-[0.5em] mb-4 animate-[folio-sub-in_0.8s_ease]">{book.author}</p>
+            <h1 className="text-5xl md:text-8xl font-black text-black uppercase tracking-tighter leading-[0.85] mb-8 animate-[folio-fade-in_1s_ease-out]">
+              {book.title}
+            </h1>
+            <div className="flex flex-wrap justify-center md:justify-start items-center gap-6">
+                <div className="bg-black/5 backdrop-blur-xl border border-black/5 rounded-full px-6 py-3">
+                    <StarRating score={book.averageRating || 0} total={book.totalRatings || 0} size="lg" />
                 </div>
-              </div>
+                <div className="flex gap-2">
+                    {book.genre?.slice(0, 3).map(g => (
+                        <span key={g} className="bg-white border border-black/5 shadow-sm text-[9px] font-black px-5 py-2.5 rounded-full uppercase tracking-widest">{g}</span>
+                    ))}
+                </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-          <div className="glass-panel rounded-[3rem] p-8">
-            <h2 className="section-title mb-6 text-gradient">BERI RATING</h2>
-            <div className="flex gap-2 mb-8">
-              {[1,2,3,4,5].map(s => (
-                <button
-                  key={s}
-                  onMouseEnter={() => setHoverRating(s)}
-                  onMouseLeave={() => setHoverRating(0)}
-                  onClick={() => { setRating(s); handleRate(s) }}
-                  className={`text-3xl transition-transform hover:scale-110 drop-shadow-sm ${s <= (hoverRating || rating) ? 'text-black' : 'text-gray-300'}`}
-                >&#9733;</button>
-              ))}
-              {rating > 0 && <span className="text-xs font-bold text-gray-500 self-center ml-4 uppercase tracking-widest">RATING KAMU: {rating}/5</span>}
-            </div>
-
-            <h2 className="section-title mb-6 pt-6 border-t border-gray-200/50 text-gradient">KOMENTAR</h2>
-            {user && (
-              <form onSubmit={handleComment} className="mb-8">
-                <textarea
-                  value={comment} onChange={e => setComment(e.target.value)}
-                  placeholder="Tulis pendapatmu tentang buku ini..."
-                  rows={3} required className="input-field bg-white/60 backdrop-blur-md resize-none mb-4"
-                />
-                <button type="submit" className="btn-primary w-full sm:w-auto">KIRIM KOMENTAR</button>
-              </form>
-            )}
-            <div className="space-y-6">
-              {book.embeddedComments?.length === 0
-                ? <p className="text-sm font-bold text-gray-400 uppercase tracking-widest text-center py-4">BELUM ADA KOMENTAR.</p>
-                : book.embeddedComments?.map(c => (
-                  <div key={c._id} className="border-b border-gray-200/50 pb-6 last:border-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-extrabold text-black uppercase tracking-widest">{c.userName}</span>
-                      <div className="flex items-center gap-3">
-                        <span className={`text-[9px] px-3 py-1 rounded-full font-bold uppercase tracking-widest shadow-sm ${c.sentiment === 'positive' ? 'bg-black text-white' : c.sentiment === 'negative' ? 'bg-red-500 text-white' : 'bg-white text-gray-500'}`}>
-                          {c.sentiment}
-                        </span>
-                        <span className="text-[10px] font-bold text-gray-400">{new Date(c.createdAt).toLocaleDateString('id-ID')}</span>
-                      </div>
-                    </div>
-                    <p className="text-sm font-medium text-gray-600 leading-relaxed">{c.text}</p>
-                    <button onClick={() => handleLike(c._id)} className="mt-3 text-[10px] font-bold text-black uppercase tracking-widest hover:text-gray-500 transition-colors">
-                      &hearts; {c.likes?.length || 0} SUKA
-                    </button>
+      <div className="container-main -mt-10 relative z-20 pb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+          {/* Main Info */}
+          <div className="lg:col-span-2 space-y-16">
+            <div className="glass-panel p-10 md:p-16 rounded-[4rem]">
+              <h2 className="text-2xl font-black text-black uppercase tracking-tighter mb-8 border-b-2 border-black/5 pb-6">SPECIFICATIONS</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                {[
+                  { label: 'PUBLISHER', value: book.publisher },
+                  { label: 'YEAR', value: book.releaseYear },
+                  { label: 'PAGES', value: `${book.pageCount} HLM` },
+                  { label: 'ISBN', value: book.isbn },
+                  { label: 'VIEWS', value: `${book.uniqueViewers || 0} READERS` },
+                  { label: 'TIER', value: book.shelf === 'hot' ? 'HOT' : 'COLD' }
+                ].map(a => (
+                  <div key={a.label}>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">{a.label}</p>
+                    <p className="text-sm font-extrabold text-black uppercase tracking-tight">{a.value || '-'}</p>
                   </div>
                 ))}
+                {book.optionalAttributes?.map(a => (
+                  <div key={a.key}>
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">{a.label}</p>
+                    <p className="text-sm font-extrabold text-black uppercase tracking-tight">{String(a.value || '-')}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="glass-panel p-10 md:p-16 rounded-[4rem]">
+              <div className="flex items-center justify-between mb-12 border-b-2 border-black/5 pb-6">
+                <h2 className="text-2xl font-black text-black uppercase tracking-tighter">READER REVIEWS</h2>
+                <div className="flex items-center gap-4">
+                  {[1,2,3,4,5].map(s => (
+                    <button 
+                      key={s} 
+                      onMouseEnter={() => setHoverRating(s)} 
+                      onMouseLeave={() => setHoverRating(0)}
+                      onClick={() => handleRate(s)}
+                      className={`text-xl transition-all duration-300 ${s <= (hoverRating || rating) ? 'text-black scale-125' : 'text-black/10'}`}
+                    >★</button>
+                  ))}
+                </div>
+              </div>
+
+              {user && (
+                <form onSubmit={handleComment} className="mb-16">
+                    <div className="relative group">
+                        <textarea 
+                            value={comment} 
+                            onChange={e => setComment(e.target.value)} 
+                            placeholder="YOUR THOUGHTS..."
+                            rows={3} 
+                            className="w-full bg-black/5 border-2 border-transparent rounded-[2rem] px-8 py-6 text-sm font-black outline-none focus:bg-white focus:border-black/5 focus:shadow-2xl transition-all uppercase placeholder:text-black/20"
+                        />
+                        <button type="submit" className="absolute right-4 bottom-4 bg-black text-white px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform">POST</button>
+                    </div>
+                </form>
+              )}
+
+              <div className="space-y-12">
+                {book.embeddedComments?.length === 0 ? (
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center py-10">No reviews yet. Be the first.</p>
+                ) : (
+                  book.embeddedComments.slice().reverse().map(c => (
+                    <div key={c._id} className="group relative pl-10 border-l-2 border-black/5 py-2">
+                        <div className="absolute left-[-5px] top-4 w-2 h-2 rounded-full bg-black group-hover:scale-150 transition-transform" />
+                        <div className="flex items-center justify-between mb-3">
+                            <p className="text-[10px] font-black text-black uppercase tracking-widest">{c.userName}</p>
+                            <span className={`text-[8px] font-black px-2 py-0.5 rounded-full uppercase ${c.sentiment === 'positive' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                                {c.sentiment}
+                            </span>
+                        </div>
+                        <p className="text-sm font-bold text-gray-500 uppercase leading-relaxed mb-4 italic">"{c.text}"</p>
+                        <button onClick={() => handleLike(c._id)} className="text-[9px] font-black text-black/40 hover:text-black uppercase tracking-widest transition-colors flex items-center gap-2">
+                            <span>❤️</span> {c.likes?.length || 0} APPRECIATION
+                        </button>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="glass-panel rounded-[3rem] p-8 h-fit">
-            <h2 className="section-title mb-8 text-gradient">STATISTIK BUKU</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              <Stat label="TOTAL KOMENTAR" value={book.totalComments || 0} />
-              <Stat label="TOTAL RATING"   value={book.totalRatings || 0} />
-              <Stat label="TOTAL VIEW"     value={book.totalViews || 0} />
-              <Stat label="PEMBACA UNIK"   value={book.uniqueViewers || 0} />
-              <Stat label="RATA-RATA RATING" value={(book.averageRating || 0).toFixed(2)} />
-              <Stat label="WEIGHTED SCORE"   value={(book.weightedRating || 0).toFixed(2)} />
+          {/* Sidebar Actions */}
+          <div className="space-y-8">
+            <div className="glass-panel p-10 rounded-[3rem] sticky top-32">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4">ACCESS TIER</p>
+              <h3 className="text-4xl font-black text-black tracking-tighter mb-10">
+                {book.accessType === 'free' ? 'FREE' : `Rp ${book.price?.toLocaleString('id-ID')}`}
+              </h3>
+              
+              <div className="space-y-4">
+                <button 
+                  onClick={() => window.open(book.driveLink || 'https://drive.google.com/file/d/1Gs2lkAelCje1xCGzRpcgSO12ZGHhe-17/view?usp=sharing', '_blank')} 
+                  className="w-full bg-black text-white font-black uppercase tracking-widest py-6 rounded-full hover:bg-neutral-800 transition-all shadow-2xl shadow-black/20"
+                >
+                  START READING &rarr;
+                </button>
+                {owned ? (
+                  <Link to="/library" className="block w-full text-center border-2 border-black text-black font-black uppercase tracking-widest py-6 rounded-full hover:bg-black hover:text-white transition-all">
+                    IN YOUR LIBRARY
+                  </Link>
+                ) : (
+                  <button onClick={handleCheckout} className="w-full border-2 border-black text-black font-black uppercase tracking-widest py-6 rounded-full hover:bg-black hover:text-white transition-all">
+                    {book.accessType === 'free' ? 'CLAIM FREE' : 'CHECKOUT BOOK'}
+                  </button>
+                )}
+              </div>
+
+              <div className="mt-12 pt-8 border-t-2 border-black/5 space-y-6">
+                <div className="flex justify-between items-center">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">AVAILABILITY</p>
+                    <p className="text-[10px] font-black text-green-500 uppercase">INSTANT ACCESS</p>
+                </div>
+                <div className="flex justify-between items-center">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">DRM STATUS</p>
+                    <p className="text-[10px] font-black text-black uppercase tracking-tighter">SECURED</p>
+                </div>
+              </div>
             </div>
+
+            {isAdmin && (
+                <div className="glass-panel p-10 rounded-[3rem] border-2 border-red-500/10">
+                    <h4 className="text-xs font-black text-red-500 uppercase tracking-widest mb-6">ADMIN CONTROLS</h4>
+                    <div className="flex flex-col gap-3">
+                        <button onClick={() => setAttrModal(true)} className="w-full bg-black/5 text-black font-black text-[10px] py-4 rounded-2xl hover:bg-black hover:text-white transition-all uppercase">+ ATTR</button>
+                        <button className="w-full bg-red-500 text-white font-black text-[10px] py-4 rounded-2xl hover:bg-red-600 transition-all uppercase">ARCHIVE</button>
+                    </div>
+                </div>
+            )}
           </div>
         </div>
-
-        {attrModal && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-            <div className="glass-panel rounded-3xl p-8 w-full max-w-md shadow-2xl">
-              <h3 className="font-extrabold text-2xl text-black mb-6 uppercase tracking-tighter text-gradient">TAMBAH ATRIBUT OPSIONAL</h3>
-              <form onSubmit={handleAddAttr} className="space-y-4">
-                <input value={newAttr.key}   onChange={e => setNewAttr(a => ({...a, key: e.target.value}))} placeholder="KEY (CONTOH: EBOOK_URL)" required className="input-field bg-white/60" />
-                <input value={newAttr.label} onChange={e => setNewAttr(a => ({...a, label: e.target.value}))} placeholder="LABEL TAMPILAN" required className="input-field bg-white/60" />
-                <select value={newAttr.type} onChange={e => setNewAttr(a => ({...a, type: e.target.value}))} className="input-field bg-white/60 font-bold uppercase text-xs">
-                  {OPTIONAL_ATTR_TYPES.map(t => <option key={t.value} value={t.value} className="font-bold">{t.label.toUpperCase()}</option>)}
-                </select>
-                <input value={newAttr.value} onChange={e => setNewAttr(a => ({...a, value: e.target.value}))} placeholder="NILAI (URL, TEKS, DLL)" className="input-field bg-white/60" />
-                <div className="flex gap-4 pt-4">
-                  <button type="submit" className="btn-primary flex-1 shadow-lg">TAMBAHKAN</button>
-                  <button type="button" onClick={() => setAttrModal(false)} className="btn-secondary flex-1">BATAL</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
       </div>
-    </div>
-  )
-}
 
-function Attr({ label, value }) {
-  return (
-    <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-2xl p-4 shadow-sm hover:bg-white/80 transition-colors">
-      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">{label}</p>
-      <p className="text-sm font-extrabold text-black uppercase truncate">{value || '-'}</p>
-    </div>
-  )
-}
-
-function Stat({ label, value }) {
-  return (
-    <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm hover:bg-white/80 hover:-translate-y-1 transition-all">
-      <p className="text-3xl font-extrabold text-black tracking-tighter">{value}</p>
-      <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-2">{label}</p>
+      {attrModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-[200] p-6">
+          <div className="glass-panel p-12 rounded-[3rem] w-full max-w-lg">
+            <h2 className="text-2xl font-black uppercase tracking-tighter mb-8">ADD ATTRIBUTE</h2>
+            <form onSubmit={handleAddAttr} className="space-y-6">
+              <input value={newAttr.key} onChange={e => setNewAttr(a => ({...a, key: e.target.value}))} placeholder="KEY ID" className="w-full bg-black/5 border-2 border-transparent rounded-2xl px-6 py-4 font-black uppercase text-xs" />
+              <input value={newAttr.label} onChange={e => setNewAttr(a => ({...a, label: e.target.value}))} placeholder="DISPLAY LABEL" className="w-full bg-black/5 border-2 border-transparent rounded-2xl px-6 py-4 font-black uppercase text-xs" />
+              <select value={newAttr.type} onChange={e => setNewAttr(a => ({...a, type: e.target.value}))} className="w-full bg-black/5 border-2 border-transparent rounded-2xl px-6 py-4 font-black uppercase text-xs">
+                {OPTIONAL_ATTR_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+              </select>
+              <input value={newAttr.value} onChange={e => setNewAttr(a => ({...a, value: e.target.value}))} placeholder="VALUE" className="w-full bg-black/5 border-2 border-transparent rounded-2xl px-6 py-4 font-black uppercase text-xs" />
+              <div className="flex gap-4">
+                <button type="submit" className="flex-1 bg-black text-white font-black py-5 rounded-full uppercase tracking-widest shadow-xl">ADD</button>
+                <button type="button" onClick={() => setAttrModal(false)} className="flex-1 border-2 border-black text-black font-black py-5 rounded-full uppercase tracking-widest">CANCEL</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
