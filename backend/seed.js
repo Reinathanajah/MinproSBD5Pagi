@@ -13,7 +13,7 @@ const daysAgo = (d) => new Date(Date.now() - d * DAY)
 
 const pickRandom = (arr, n) => [...arr].sort(() => Math.random() - 0.5).slice(0, n)
 
-const cover = (seed) => `https://picsum.photos/seed/${seed}/400/600`
+const cover = (seed) => `https://picsum.photos/seed/${seed}/1000/1500`
 
 const analyzeSentiment = (text) => {
   const lower = text.toLowerCase()
@@ -277,8 +277,12 @@ async function seed() {
     const avgRating = 3.5 + Math.random() * 1.5
     const numRatings = numComments + Math.floor(Math.random() * 50)
 
+    const genre = [...data.genre]
+    if (Math.random() > 0.8) genre.push('Promo')
+
     books.push({
       ...data,
+      genre,
       coverImage: cover(data.isbn.replace(/[^a-z0-9]/gi, '')),
       accessType,
       price: accessType === 'sale' ? 0 : 0,

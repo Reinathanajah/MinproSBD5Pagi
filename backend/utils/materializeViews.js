@@ -66,12 +66,12 @@ export const getMaterializedViews = async () => {
       { $sort: { avgWeighted: -1 } }
     ]),
 
-    Book.find({ status: 'active', registeredAt: { $gte: since14 } })
+    Book.find({ status: 'active' })
       .sort({ weightedRating: -1 })
       .limit(10)
       .select('title author coverImage genre weightedRating averageRating totalRatings registeredAt accessType price'),
 
-    Book.find({ status: 'active', registeredAt: { $gte: since14 } })
+    Book.find({ status: 'active' })
       .sort({ totalComments: -1 })
       .limit(10)
       .select('title author coverImage genre totalComments registeredAt accessType price'),
@@ -99,8 +99,15 @@ export const getMaterializedViews = async () => {
 
 export const getHomepageBooks = async () => {
   const since14 = new Date(Date.now() - FOURTEEN_DAYS)
-  const recent = await Book.find({ status: 'active', registeredAt: { $gte: since14 } })
+  let recent = await Book.find({ status: 'active', registeredAt: { $gte: since14 } })
     .select('title author coverImage genre accessType price weightedRating registeredAt')
+  
+  if (recent.length === 0) {
+    recent = await Book.find({ status: 'active' })
+      .limit(20)
+      .select('title author coverImage genre accessType price weightedRating registeredAt')
+  }
+
   const shuffled = recent.sort(() => Math.random() - 0.5)
   return shuffled.slice(0, 10)
 }

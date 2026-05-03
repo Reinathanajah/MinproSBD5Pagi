@@ -36,7 +36,7 @@ export const COUNTRIES = [
 ]
 
 export const GENRES = [
-  'Fiksi','Non-Fiksi','Sains & Teknologi','Sejarah','Biografi','Bisnis & Ekonomi',
+  'Promo', 'Fiksi','Non-Fiksi','Sains & Teknologi','Sejarah','Biografi','Bisnis & Ekonomi',
   'Psikologi','Filsafat','Seni & Budaya','Agama & Spiritualitas','Kesehatan',
   'Politik','Hukum','Pendidikan','Anak-anak','Komik & Manga','Horor','Romance',
   'Thriller','Petualangan','Fantasi','Sastra Klasik','Self-Help','Travel'

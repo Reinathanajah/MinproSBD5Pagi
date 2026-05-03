@@ -38,8 +38,8 @@ export default function Navbar() {
       <div className="bg-black/5 backdrop-blur-md">
         <div className="container-main flex justify-end gap-6 py-2">
           <Link to="/search?genre=Promo" className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors">PROMO</Link>
-          <Link to="/about"             className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors">TENTANG KAMI</Link>
-          <Link to="/contact"           className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors">HUBUNGI KAMI</Link>
+          <Link to="/about" className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors">TENTANG KAMI</Link>
+          <Link to="/contact" className="text-[10px] font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors">HUBUNGI KAMI</Link>
         </div>
       </div>
 
@@ -105,11 +105,11 @@ export default function Navbar() {
         </div>
 
         <nav className="flex gap-6 lg:gap-8 pb-4 pt-1 overflow-x-auto scrollbar-hide">
-          <Link to="/"             className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">BERANDA</Link>
-          <Link to="/search"       className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">KATALOG</Link>
+          <Link to="/" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">BERANDA</Link>
+          <Link to="/search" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">KATALOG</Link>
           <Link to="/search?hot=1" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">HOT BOOKS</Link>
           <Link to="/search?sort=commented" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">MOST DISCUSSED</Link>
-          <Link to="/search?sort=viewed"    className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">MOST VIEWED</Link>
+          <Link to="/search?sort=viewed" className="text-xs font-bold text-gray-500 uppercase tracking-widest hover:text-black transition-colors whitespace-nowrap">MOST VIEWED</Link>
         </nav>
       </div>
     </header>
