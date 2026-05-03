@@ -23,7 +23,9 @@ export default function BookDetailPage() {
     try {
       const { data } = await api.get(`/books/${id}`)
       setBook(data)
-      await api.post(`/books/${id}/click`)
+      try {
+        await api.post(`/books/${id}/click`)
+      } catch (err) {}
     } catch { navigate('/') }
     setLoading(false)
   }
@@ -99,7 +101,7 @@ export default function BookDetailPage() {
 
   if (loading) return (
     <div className="flex justify-center items-center h-96">
-      <div className="w-10 h-10 border-4 border-[#0060AE] border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-white border-t-black rounded-full animate-spin shadow-lg" />
     </div>
   )
   if (!book) return null
@@ -107,66 +109,68 @@ export default function BookDetailPage() {
   const formatPrice = (p) => p === 0 ? 'Rp 0,00' : `Rp ${p?.toLocaleString('id-ID')}`
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] py-10">
+    <div className="min-h-screen bg-mesh-gradient py-10">
       <div className="container-main">
         {msg && (
-          <div className="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3 mb-6">
-            {msg} <button onClick={() => setMsg('')} className="ml-2 text-green-500">x</button>
+          <div className="bg-black/90 backdrop-blur-md text-white text-sm font-bold uppercase tracking-widest rounded-full px-6 py-4 mb-8 flex justify-between items-center shadow-lg">
+            {msg} <button onClick={() => setMsg('')} className="ml-4 hover:scale-125 transition-transform">X</button>
           </div>
         )}
 
-        <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] overflow-hidden">
+        <div className="glass-panel rounded-[3rem] overflow-hidden mb-12">
           <div className="flex flex-col md:flex-row gap-0">
-            <div className="md:w-64 lg:w-80 flex-shrink-0 bg-[#F3F4F6] flex items-center justify-center p-8">
+            <div className="md:w-72 lg:w-96 flex-shrink-0 bg-black/5 flex items-center justify-center p-12">
               <img
                 src={book.coverImage}
                 alt={book.title}
-                className="w-full max-w-[200px] rounded-xl shadow-lg object-cover aspect-[3/4]"
+                className="w-full max-w-[240px] rounded-2xl shadow-2xl shadow-black/30 object-cover aspect-[3/4] animate-float"
                 onError={e => { e.target.src = 'https://via.placeholder.com/200x267?text=No+Cover' }}
               />
             </div>
 
-            <div className="flex-1 p-8">
-              <div className="flex flex-wrap gap-2 mb-3">
-                {book.genre?.map(g => <span key={g} className="genre-pill">{g}</span>)}
-                {book.shelf === 'hot' && <span className="bg-orange-100 text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">HOT</span>}
-                {book.accessType === 'free' ? <span className="badge-free">Gratis</span> : <span className="badge-sale">Berbayar</span>}
+            <div className="flex-1 p-8 lg:p-12 flex flex-col justify-center relative">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gray-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 -z-10 pointer-events-none"></div>
+              
+              <div className="flex flex-wrap gap-2 mb-4">
+                {book.genre?.map(g => <span key={g} className="bg-white/60 border border-white/50 text-gray-600 text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-sm">{g}</span>)}
+                {book.shelf === 'hot' && <span className="bg-red-500 text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-md shadow-red-500/20">HOT</span>}
+                {book.accessType === 'free' ? <span className="badge-free shadow-sm">GRATIS</span> : <span className="badge-sale shadow-md">BERBAYAR</span>}
               </div>
 
-              <h1 className="text-2xl lg:text-3xl font-extrabold text-[#374151] mb-1 leading-tight">{book.title}</h1>
-              <p className="text-[#6B7280] font-semibold mb-4">{book.author}</p>
+              <h1 className="text-3xl lg:text-5xl font-extrabold text-black mb-2 leading-tight uppercase tracking-tighter text-gradient drop-shadow-sm">{book.title}</h1>
+              <p className="text-gray-500 font-extrabold uppercase tracking-widest text-sm mb-6">{book.author}</p>
 
               <StarRating score={book.averageRating || 0} total={book.totalRatings || 0} size="lg" />
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6 mb-6">
-                <Attr label="Penerbit"      value={book.publisher} />
-                <Attr label="Tahun Rilis"   value={book.releaseYear} />
-                <Attr label="Jumlah Halaman" value={`${book.pageCount} hlm`} />
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8 mb-8">
+                <Attr label="PENERBIT"      value={book.publisher} />
+                <Attr label="TAHUN RILIS"   value={book.releaseYear} />
+                <Attr label="JUMLAH HALAMAN" value={`${book.pageCount} HLM`} />
                 <Attr label="ISBN"          value={book.isbn} />
-                <Attr label="Shelf"         value={book.shelf === 'hot' ? 'Hot Shelf' : 'Cold Shelf'} />
-                <Attr label="Penayangan"    value={`${book.uniqueViewers || 0} pembaca`} />
+                <Attr label="SHELF"         value={book.shelf === 'hot' ? 'HOT SHELF' : 'COLD SHELF'} />
+                <Attr label="PENAYANGAN"    value={`${book.uniqueViewers || 0} PEMBACA`} />
                 {book.optionalAttributes?.map(a => (
                   <Attr key={a.key} label={a.label} value={String(a.value || '-')} />
                 ))}
               </div>
 
-              <div className="border-t border-[#E5E7EB] pt-6">
+              <div className="border-t border-gray-200/50 pt-8 mt-auto">
                 {book.accessType === 'free'
-                  ? <p className="text-[#0060AE] font-extrabold text-2xl mb-4">Gratis</p>
-                  : <p className="text-[#374151] font-extrabold text-2xl mb-4">{formatPrice(book.price)}</p>}
+                  ? <p className="text-black font-extrabold text-3xl mb-6 uppercase tracking-tighter text-gradient">GRATIS</p>
+                  : <p className="text-black font-extrabold text-3xl mb-6 tracking-tighter text-gradient">{formatPrice(book.price)}</p>}
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-4">
                   {owned
-                    ? <button onClick={() => navigate('/library')} className="btn-primary px-8 py-3 text-base">Lanjut Membaca</button>
-                    : <button onClick={handleCheckout} className="btn-primary px-8 py-3 text-base">
-                        {book.accessType === 'free' ? 'Akses Gratis' : 'Checkout'}
+                    ? <button onClick={() => navigate('/library')} className="btn-primary shadow-xl">LANJUT MEMBACA</button>
+                    : <button onClick={handleCheckout} className="btn-primary shadow-xl">
+                        {book.accessType === 'free' ? 'AKSES GRATIS' : 'CHECKOUT SEKARANG'}
                       </button>}
 
                   {isAdmin && (
                     <>
-                      <button onClick={handleArchive} className="btn-secondary">Arsipkan</button>
-                      <button onClick={handleDelete}  className="btn-danger">Hapus</button>
-                      <button onClick={() => setAttrModal(true)} className="btn-secondary">+ Atribut</button>
+                      <button onClick={handleArchive} className="btn-secondary">ARSIPKAN</button>
+                      <button onClick={handleDelete}  className="btn-danger">HAPUS</button>
+                      <button onClick={() => setAttrModal(true)} className="btn-secondary">+ ATRIBUT</button>
                     </>
                   )}
                 </div>
@@ -175,83 +179,83 @@ export default function BookDetailPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-6">
-            <h2 className="section-title mb-4">Beri Rating</h2>
-            <div className="flex gap-2 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
+          <div className="glass-panel rounded-[3rem] p-8">
+            <h2 className="section-title mb-6 text-gradient">BERI RATING</h2>
+            <div className="flex gap-2 mb-8">
               {[1,2,3,4,5].map(s => (
                 <button
                   key={s}
                   onMouseEnter={() => setHoverRating(s)}
                   onMouseLeave={() => setHoverRating(0)}
                   onClick={() => { setRating(s); handleRate(s) }}
-                  className={`text-2xl transition-transform hover:scale-110 ${s <= (hoverRating || rating) ? 'text-yellow-400' : 'text-[#E5E7EB]'}`}
+                  className={`text-3xl transition-transform hover:scale-110 drop-shadow-sm ${s <= (hoverRating || rating) ? 'text-black' : 'text-gray-300'}`}
                 >&#9733;</button>
               ))}
-              {rating > 0 && <span className="text-sm text-[#6B7280] self-center ml-2">Rating kamu: {rating}/5</span>}
+              {rating > 0 && <span className="text-xs font-bold text-gray-500 self-center ml-4 uppercase tracking-widest">RATING KAMU: {rating}/5</span>}
             </div>
 
-            <h2 className="section-title mb-4 pt-4 border-t border-[#E5E7EB]">Komentar</h2>
+            <h2 className="section-title mb-6 pt-6 border-t border-gray-200/50 text-gradient">KOMENTAR</h2>
             {user && (
-              <form onSubmit={handleComment} className="mb-6">
+              <form onSubmit={handleComment} className="mb-8">
                 <textarea
                   value={comment} onChange={e => setComment(e.target.value)}
-                  placeholder="Tulis komentarmu tentang buku ini..."
-                  rows={3} required className="input-field resize-none mb-2"
+                  placeholder="Tulis pendapatmu tentang buku ini..."
+                  rows={3} required className="input-field bg-white/60 backdrop-blur-md resize-none mb-4"
                 />
-                <button type="submit" className="btn-primary">Kirim Komentar</button>
+                <button type="submit" className="btn-primary w-full sm:w-auto">KIRIM KOMENTAR</button>
               </form>
             )}
-            <div className="space-y-4">
+            <div className="space-y-6">
               {book.embeddedComments?.length === 0
-                ? <p className="text-sm text-[#6B7280]">Belum ada komentar.</p>
+                ? <p className="text-sm font-bold text-gray-400 uppercase tracking-widest text-center py-4">BELUM ADA KOMENTAR.</p>
                 : book.embeddedComments?.map(c => (
-                  <div key={c._id} className="border-b border-[#F3F4F6] pb-4 last:border-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-bold text-[#374151]">{c.userName}</span>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${c.sentiment === 'positive' ? 'bg-green-100 text-green-700' : c.sentiment === 'negative' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'}`}>
+                  <div key={c._id} className="border-b border-gray-200/50 pb-6 last:border-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-extrabold text-black uppercase tracking-widest">{c.userName}</span>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-[9px] px-3 py-1 rounded-full font-bold uppercase tracking-widest shadow-sm ${c.sentiment === 'positive' ? 'bg-black text-white' : c.sentiment === 'negative' ? 'bg-red-500 text-white' : 'bg-white text-gray-500'}`}>
                           {c.sentiment}
                         </span>
-                        <span className="text-xs text-[#6B7280]">{new Date(c.createdAt).toLocaleDateString('id-ID')}</span>
+                        <span className="text-[10px] font-bold text-gray-400">{new Date(c.createdAt).toLocaleDateString('id-ID')}</span>
                       </div>
                     </div>
-                    <p className="text-sm text-[#6B7280]">{c.text}</p>
-                    <button onClick={() => handleLike(c._id)} className="mt-1 text-xs text-[#0060AE] hover:underline">
-                      {c.likes?.length || 0} Suka
+                    <p className="text-sm font-medium text-gray-600 leading-relaxed">{c.text}</p>
+                    <button onClick={() => handleLike(c._id)} className="mt-3 text-[10px] font-bold text-black uppercase tracking-widest hover:text-gray-500 transition-colors">
+                      &hearts; {c.likes?.length || 0} SUKA
                     </button>
                   </div>
                 ))}
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-6">
-            <h2 className="section-title mb-4">Statistik Buku</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <Stat label="Total Komentar" value={book.totalComments || 0} color="blue" />
-              <Stat label="Total Rating"   value={book.totalRatings || 0}  color="yellow" />
-              <Stat label="Total View"     value={book.totalViews || 0}    color="green" />
-              <Stat label="Pembaca Unik"   value={book.uniqueViewers || 0} color="purple" />
-              <Stat label="Rata-rata Rating" value={(book.averageRating || 0).toFixed(2)} color="orange" />
-              <Stat label="Weighted Score"   value={(book.weightedRating || 0).toFixed(2)} color="red" />
+          <div className="glass-panel rounded-[3rem] p-8 h-fit">
+            <h2 className="section-title mb-8 text-gradient">STATISTIK BUKU</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <Stat label="TOTAL KOMENTAR" value={book.totalComments || 0} />
+              <Stat label="TOTAL RATING"   value={book.totalRatings || 0} />
+              <Stat label="TOTAL VIEW"     value={book.totalViews || 0} />
+              <Stat label="PEMBACA UNIK"   value={book.uniqueViewers || 0} />
+              <Stat label="RATA-RATA RATING" value={(book.averageRating || 0).toFixed(2)} />
+              <Stat label="WEIGHTED SCORE"   value={(book.weightedRating || 0).toFixed(2)} />
             </div>
           </div>
         </div>
 
         {attrModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
-              <h3 className="font-extrabold text-lg text-[#374151] mb-4">Tambah Atribut Opsional</h3>
-              <form onSubmit={handleAddAttr} className="space-y-3">
-                <input value={newAttr.key}   onChange={e => setNewAttr(a => ({...a, key: e.target.value}))} placeholder="Key (contoh: ebook_url)" required className="input-field" />
-                <input value={newAttr.label} onChange={e => setNewAttr(a => ({...a, label: e.target.value}))} placeholder="Label tampilan" required className="input-field" />
-                <select value={newAttr.type} onChange={e => setNewAttr(a => ({...a, type: e.target.value}))} className="input-field">
-                  {OPTIONAL_ATTR_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+            <div className="glass-panel rounded-3xl p-8 w-full max-w-md shadow-2xl">
+              <h3 className="font-extrabold text-2xl text-black mb-6 uppercase tracking-tighter text-gradient">TAMBAH ATRIBUT OPSIONAL</h3>
+              <form onSubmit={handleAddAttr} className="space-y-4">
+                <input value={newAttr.key}   onChange={e => setNewAttr(a => ({...a, key: e.target.value}))} placeholder="KEY (CONTOH: EBOOK_URL)" required className="input-field bg-white/60" />
+                <input value={newAttr.label} onChange={e => setNewAttr(a => ({...a, label: e.target.value}))} placeholder="LABEL TAMPILAN" required className="input-field bg-white/60" />
+                <select value={newAttr.type} onChange={e => setNewAttr(a => ({...a, type: e.target.value}))} className="input-field bg-white/60 font-bold uppercase text-xs">
+                  {OPTIONAL_ATTR_TYPES.map(t => <option key={t.value} value={t.value} className="font-bold">{t.label.toUpperCase()}</option>)}
                 </select>
-                <input value={newAttr.value} onChange={e => setNewAttr(a => ({...a, value: e.target.value}))} placeholder="Nilai (URL, teks, dll)" className="input-field" />
-                <div className="flex gap-3 pt-2">
-                  <button type="submit" className="btn-primary flex-1">Tambahkan</button>
-                  <button type="button" onClick={() => setAttrModal(false)} className="btn-secondary flex-1">Batal</button>
+                <input value={newAttr.value} onChange={e => setNewAttr(a => ({...a, value: e.target.value}))} placeholder="NILAI (URL, TEKS, DLL)" className="input-field bg-white/60" />
+                <div className="flex gap-4 pt-4">
+                  <button type="submit" className="btn-primary flex-1 shadow-lg">TAMBAHKAN</button>
+                  <button type="button" onClick={() => setAttrModal(false)} className="btn-secondary flex-1">BATAL</button>
                 </div>
               </form>
             </div>
@@ -264,19 +268,18 @@ export default function BookDetailPage() {
 
 function Attr({ label, value }) {
   return (
-    <div className="bg-[#F9FAFB] rounded-lg p-3">
-      <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide mb-0.5">{label}</p>
-      <p className="text-sm font-bold text-[#374151]">{value || '-'}</p>
+    <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-2xl p-4 shadow-sm hover:bg-white/80 transition-colors">
+      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">{label}</p>
+      <p className="text-sm font-extrabold text-black uppercase truncate">{value || '-'}</p>
     </div>
   )
 }
 
-function Stat({ label, value, color }) {
-  const colors = { blue:'bg-blue-50 text-blue-700', yellow:'bg-yellow-50 text-yellow-700', green:'bg-green-50 text-green-700', purple:'bg-purple-50 text-purple-700', orange:'bg-orange-50 text-orange-700', red:'bg-red-50 text-red-700' }
+function Stat({ label, value }) {
   return (
-    <div className={`${colors[color]} rounded-xl p-4 text-center`}>
-      <p className="text-2xl font-extrabold">{value}</p>
-      <p className="text-xs font-semibold mt-0.5">{label}</p>
+    <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-sm hover:bg-white/80 hover:-translate-y-1 transition-all">
+      <p className="text-3xl font-extrabold text-black tracking-tighter">{value}</p>
+      <p className="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-2">{label}</p>
     </div>
   )
 }

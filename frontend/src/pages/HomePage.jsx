@@ -40,55 +40,56 @@ export default function HomePage() {
     return () => clearInterval(t)
   }, [homepage])
 
-  const heroColors = ['from-[#0060AE]','from-[#1a3a5c]','from-[#0d5c44]','from-[#6b2d8b]','from-[#c24b1a]']
-
   return (
-    <div className="min-h-screen bg-[#F9FAFB]">
+    <div className="min-h-screen bg-mesh-gradient">
       {loading ? (
         <div className="flex justify-center items-center h-96">
-          <div className="w-10 h-10 border-4 border-[#0060AE] border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-4 border-neutral-200 border-t-black rounded-full animate-spin" />
         </div>
       ) : (
         <>
           {homepage.length > 0 && (
-            <section className="relative overflow-hidden bg-gradient-to-r from-[#0060AE] to-[#003d70] h-72 sm:h-96">
+            <section className="relative overflow-hidden bg-black h-[36rem] sm:h-[42rem] rounded-b-[3rem] mx-2 shadow-2xl shadow-black/20">
               {homepage.map((book, i) => (
                 <div
                   key={book._id}
-                  className={`absolute inset-0 transition-opacity duration-700 ${i === slide ? 'opacity-100' : 'opacity-0'}`}
+                  className={`absolute inset-0 transition-opacity duration-1000 ${i === slide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-r ${heroColors[i % heroColors.length]} to-transparent opacity-90`} />
+                  <div className="absolute inset-0 bg-black opacity-60 z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
                   {book.coverImage && (
-                    <img src={book.coverImage} alt={book.title} className="absolute right-0 h-full w-1/3 object-cover opacity-30" />
+                    <img src={book.coverImage} alt={book.title} className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity grayscale scale-105 animate-[mesh-pulse_20s_infinite]" />
                   )}
-                  <div className="relative container-main h-full flex flex-col justify-center gap-3">
-                    <div className="flex gap-2 flex-wrap">
+                  <div className="relative container-main h-full flex flex-col justify-center items-start gap-4 z-20">
+                    <div className="flex gap-2 flex-wrap mb-2 animate-float">
                       {book.genre?.slice(0, 2).map(g => (
-                        <span key={g} className="bg-white/20 text-white text-xs font-semibold px-2 py-0.5 rounded-full">{g}</span>
+                        <span key={g} className="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] font-extrabold px-4 py-1.5 rounded-full uppercase tracking-widest">{g}</span>
                       ))}
                     </div>
-                    <h1 className="text-2xl sm:text-4xl font-extrabold text-white leading-tight max-w-lg line-clamp-2">{book.title}</h1>
-                    <p className="text-white/80 text-sm">{book.author}</p>
-                    <button onClick={() => navigate(`/book/${book._id}`)} className="mt-2 btn-primary w-fit">
-                      Lihat Buku
-                    </button>
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-500 leading-[1.05] max-w-4xl line-clamp-2 uppercase tracking-tighter drop-shadow-2xl">{book.title}</h1>
+                    <p className="text-white/70 text-lg sm:text-2xl font-light uppercase tracking-widest drop-shadow-lg">{book.author}</p>
+                    <div className="mt-8">
+                      <button onClick={() => navigate(`/book/${book._id}`)} className="bg-white text-black font-extrabold uppercase tracking-widest px-8 py-4 rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-xl shadow-white/10">
+                        EXPLORE NOW
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-30 glass-panel px-5 py-3 rounded-full">
                 {homepage.map((_, i) => (
-                  <button key={i} onClick={() => setSlide(i)} className={`w-2 h-2 rounded-full transition-all ${i === slide ? 'bg-white w-6' : 'bg-white/50'}`} />
+                  <button key={i} onClick={() => setSlide(i)} className={`w-2.5 h-2.5 transition-all duration-500 rounded-full ${i === slide ? 'bg-black w-8' : 'bg-black/30 hover:bg-black/50'}`} />
                 ))}
               </div>
             </section>
           )}
 
-          <div className="container-main py-8 space-y-12">
-            <section>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="section-title">Browse Genre</h2>
+          <div className="container-main py-20 space-y-24">
+            <section className="glass-panel p-8 sm:p-12 rounded-[3rem]">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="section-title text-gradient">BROWSE GENRES</h2>
               </div>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex gap-3 flex-wrap">
                 {GENRES.map(g => (
                   <button key={g} onClick={() => navigate(`/search?genre=${g}`)} className="genre-pill">{g}</button>
                 ))}
@@ -96,24 +97,24 @@ export default function HomePage() {
             </section>
 
             {homepage.length > 0 && (
-              <Section title="Baru Ditambahkan" link="/search" books={homepage} />
+              <Section title="NEW ARRIVALS" link="/search" books={homepage} />
             )}
             {hot.length > 0 && (
-              <Section title="Hot Books" link="/search?hot=1" books={hot} />
+              <Section title="HOT BOOKS" link="/search?hot=1" books={hot} />
             )}
             {commented.length > 0 && (
-              <Section title="Most Commented" link="/search?sort=commented" books={commented} />
+              <Section title="MOST DISCUSSED" link="/search?sort=commented" books={commented} />
             )}
             {viewed.length > 0 && (
-              <Section title="Most Viewed" link="/search?sort=viewed" books={viewed} />
+              <Section title="MOST VIEWED" link="/search?sort=viewed" books={viewed} />
             )}
 
             {homepage.length === 0 && hot.length === 0 && (
-              <div className="text-center py-24">
-                <div className="text-6xl mb-4"></div>
-                <h2 className="text-2xl font-extrabold text-[#374151] mb-2">Belum ada buku</h2>
-                <p className="text-[#6B7280] mb-6">Admin belum menambahkan buku apapun. Tunggu sebentar!</p>
-                <Link to="/login" className="btn-primary">Masuk sebagai Admin</Link>
+              <div className="text-center py-32 glass-panel rounded-[3rem] mx-4">
+                <div className="text-6xl mb-6 opacity-80 animate-float">😶</div>
+                <h2 className="text-4xl font-extrabold text-black mb-4 uppercase tracking-tighter text-gradient">THE VOID IS EMPTY</h2>
+                <p className="text-gray-500 font-medium mb-10 text-xs uppercase tracking-widest">Admin has not added any books yet.</p>
+                <Link to="/login" className="btn-primary">ACCESS AS ADMIN</Link>
               </div>
             )}
           </div>
@@ -124,14 +125,13 @@ export default function HomePage() {
 }
 
 function Section({ title, link, books }) {
-  const navigate = useNavigate()
   return (
     <section>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="section-title">{title}</h2>
-        <Link to={link} className="text-xs text-[#0060AE] font-semibold hover:underline">Lihat Semua</Link>
+      <div className="flex items-end justify-between mb-8">
+        <h2 className="section-title m-0 text-gradient">{title}</h2>
+        <Link to={link} className="text-[10px] text-black font-extrabold uppercase tracking-widest hover:underline transition-all py-2 px-4 glass-panel rounded-full">VIEW ALL &rarr;</Link>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-10">
         {books.map(b => <BookCard key={b._id} book={b} />)}
       </div>
     </section>

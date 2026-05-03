@@ -4,11 +4,11 @@ import { useAuth } from '../context/AuthContext.jsx'
 import { JOBS, COUNTRIES } from '../constants/data.js'
 
 const reqs = [
-  { id: 'len',   label: 'Minimal 10 karakter',          test: v => v.length >= 10 },
-  { id: 'upper', label: 'Mengandung huruf besar (A-Z)', test: v => /[A-Z]/.test(v) },
-  { id: 'lower', label: 'Mengandung huruf kecil (a-z)', test: v => /[a-z]/.test(v) },
-  { id: 'num',   label: 'Mengandung angka (0-9)',       test: v => /\d/.test(v) },
-  { id: 'sym',   label: 'Mengandung karakter spesial',  test: v => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(v) }
+  { id: 'len',   label: 'MINIMAL 10 KARAKTER',          test: v => v.length >= 10 },
+  { id: 'upper', label: 'MENGANDUNG HURUF BESAR (A-Z)', test: v => /[A-Z]/.test(v) },
+  { id: 'lower', label: 'MENGANDUNG HURUF KECIL (A-Z)', test: v => /[a-z]/.test(v) },
+  { id: 'num',   label: 'MENGANDUNG ANGKA (0-9)',       test: v => /\d/.test(v) },
+  { id: 'sym',   label: 'MENGANDUNG KARAKTER SPESIAL',  test: v => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(v) }
 ]
 
 export default function RegisterPage() {
@@ -40,98 +40,102 @@ export default function RegisterPage() {
   const metPass = reqs.map(r => r.test(form.password))
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-lg">
-        <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] p-8">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-0.5 mb-1">
-              <span className="text-2xl font-extrabold" style={{ color: '#0060AE' }}>Folio</span>
-              <span className="text-2xl font-extrabold" style={{ color: '#F59E0B' }}>!</span>
+    <div className="min-h-screen bg-mesh-gradient flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-xl relative">
+        <div className="absolute -top-10 -left-10 w-32 h-32 bg-gray-200 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-pulse"></div>
+        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-neutral-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
+
+        <div className="glass-panel rounded-[3rem] p-10 relative z-10">
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-1 mb-2 animate-float">
+              <span className="text-4xl font-extrabold text-black uppercase tracking-tighter text-gradient">FOLIO.</span>
             </div>
-            <p className="text-sm text-[#6B7280]">Bergabung dengan Folio!</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">BERGABUNG DENGAN FOLIO!</p>
           </div>
 
           {err && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-5">{err}</div>
+            <div className="bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl px-4 py-3 mb-6 text-center shadow-lg shadow-red-500/20">
+              {err}
+            </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Field label="Nama Lengkap" required>
-              <input value={form.fullName} onChange={e => set('fullName', e.target.value)} placeholder="Nama lengkap" required className="input-field" />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <Field label="NAMA LENGKAP" required>
+              <input value={form.fullName} onChange={e => set('fullName', e.target.value)} placeholder="NAMA LENGKAP" required className="input-field bg-white/60 backdrop-blur-md" />
             </Field>
 
             <div className="grid grid-cols-2 gap-4">
-              <Field label="No. HP" required>
-                <input value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="08xxxxxxxxxx" required className="input-field" />
+              <Field label="NO. HP" required>
+                <input value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="08XXXXXXXXXX" required className="input-field bg-white/60 backdrop-blur-md" />
               </Field>
-              <Field label="Umur" required>
-                <input type="number" min={1} max={120} value={form.age} onChange={e => set('age', e.target.value)} placeholder="25" required className="input-field" />
+              <Field label="UMUR" required>
+                <input type="number" min={1} max={120} value={form.age} onChange={e => set('age', e.target.value)} placeholder="25" required className="input-field bg-white/60 backdrop-blur-md" />
               </Field>
             </div>
 
-            <Field label="Email (Gmail)" required>
-              <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="email@gmail.com" required className="input-field" />
+            <Field label="EMAIL (GMAIL)" required>
+              <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="EMAIL@GMAIL.COM" required className="input-field bg-white/60 backdrop-blur-md" />
             </Field>
 
-            <Field label="Password" required>
+            <Field label="PASSWORD" required>
               <div className="relative">
                 <input
                   type={show ? 'text' : 'password'} value={form.password}
                   onChange={e => set('password', e.target.value)}
-                  placeholder="Buat password kuat" required className="input-field pr-24"
+                  placeholder="BUAT PASSWORD KUAT" required className="input-field bg-white/60 backdrop-blur-md pr-24"
                 />
                 <button type="button" onClick={() => setShow(!show)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#6B7280] hover:text-[#374151]">
-                  {show ? 'Sembunyikan' : 'Tampilkan'}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-400 hover:text-black uppercase tracking-widest transition-colors">
+                  {show ? 'TUTUP' : 'LIHAT'}
                 </button>
               </div>
               {form.password.length > 0 && (
-                <div className="mt-2 space-y-1">
+                <div className="mt-3 space-y-2">
                   {reqs.map((r, i) => (
                     <div key={r.id} className="flex items-center gap-2">
-                      <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] ${metPass[i] ? 'bg-green-500' : 'bg-[#E5E7EB]'}`}>
-                        {metPass[i] ? <span className="text-white text-[8px]">OK</span> : ''}
+                      <div className={`w-3 h-3 rounded-full flex items-center justify-center text-[7px] font-bold ${metPass[i] ? 'bg-black text-white shadow-sm' : 'bg-gray-200'}`}>
+                        {metPass[i] ? '✓' : ''}
                       </div>
-                      <span className={`text-xs ${metPass[i] ? 'text-green-600' : 'text-[#6B7280]'}`}>{r.label}</span>
+                      <span className={`text-[9px] font-bold tracking-widest ${metPass[i] ? 'text-black' : 'text-gray-400'}`}>{r.label}</span>
                     </div>
                   ))}
                 </div>
               )}
             </Field>
 
-            <Field label="Pekerjaan" required>
-              <select value={form.job} onChange={e => set('job', e.target.value)} required className="input-field">
-                <option value="">Pilih pekerjaan...</option>
-                {JOBS.map(j => <option key={j} value={j}>{j}</option>)}
+            <Field label="PEKERJAAN" required>
+              <select value={form.job} onChange={e => set('job', e.target.value)} required className="input-field bg-white/60 backdrop-blur-md uppercase text-xs font-bold text-gray-500 focus:text-black">
+                <option value="" className="uppercase">PILIH PEKERJAAN...</option>
+                {JOBS.map(j => <option key={j} value={j} className="uppercase font-bold">{j.toUpperCase()}</option>)}
               </select>
             </Field>
 
             {form.job === 'Other' && (
-              <Field label="Sebutkan Pekerjaan Anda" required>
+              <Field label="SEBUTKAN PEKERJAAN ANDA" required>
                 <input
                   value={form.customJob} onChange={e => set('customJob', e.target.value)}
-                  placeholder="Tuliskan pekerjaan Anda secara spesifik" required
-                  className={`input-field border-red-400 focus:ring-red-400`}
+                  placeholder="TULISKAN PEKERJAAN ANDA" required
+                  className={`input-field bg-white/60 backdrop-blur-md border-2 border-black focus:ring-black`}
                 />
               </Field>
             )}
 
-            <Field label="Negara" required>
-              <select value={form.country} onChange={e => set('country', e.target.value)} required className="input-field">
-                <option value="">Pilih negara...</option>
-                {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+            <Field label="NEGARA" required>
+              <select value={form.country} onChange={e => set('country', e.target.value)} required className="input-field bg-white/60 backdrop-blur-md uppercase text-xs font-bold text-gray-500 focus:text-black">
+                <option value="" className="uppercase">PILIH NEGARA...</option>
+                {COUNTRIES.map(c => <option key={c} value={c} className="uppercase font-bold">{c.toUpperCase()}</option>)}
               </select>
             </Field>
 
             <button type="submit" disabled={loading}
-              className="btn-primary w-full py-2.5 mt-2 disabled:opacity-60">
-              {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
+              className="btn-primary w-full mt-8 disabled:opacity-60">
+              {loading ? 'MENDAFTARKAN...' : 'DAFTAR SEKARANG'}
             </button>
           </form>
 
-          <p className="text-center text-sm text-[#6B7280] mt-6">
-            Sudah punya akun?{' '}
-            <Link to="/login" className="text-[#0060AE] font-semibold hover:underline">Masuk di sini</Link>
+          <p className="text-center text-[10px] font-bold text-gray-400 mt-8 uppercase tracking-widest">
+            SUDAH PUNYA AKUN?{' '}
+            <Link to="/login" className="text-black hover:underline transition-all font-extrabold">MASUK DI SINI</Link>
           </p>
         </div>
       </div>
@@ -142,8 +146,8 @@ export default function RegisterPage() {
 function Field({ label, required, children }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-[#374151] mb-1.5">
-        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+      <label className="block text-[10px] font-bold text-black mb-2 uppercase tracking-widest">
+        {label}{required && <span className="text-red-500 ml-1">*</span>}
       </label>
       {children}
     </div>

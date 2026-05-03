@@ -22,51 +22,51 @@ export default function ProfilePage() {
     fetch()
   }, [])
 
-  if (loading) return <div className="flex justify-center py-24"><div className="w-10 h-10 border-4 border-[#0060AE] border-t-transparent rounded-full animate-spin" /></div>
+  if (loading) return <div className="flex justify-center py-32"><div className="w-10 h-10 border-4 border-white border-t-black rounded-full animate-spin shadow-lg" /></div>
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] py-10">
+    <div className="min-h-screen bg-mesh-gradient py-12">
       <div className="container-main max-w-4xl">
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-8 mb-8">
-          <div className="flex items-center gap-5 mb-6">
-            <div className="w-16 h-16 rounded-full bg-[#0060AE] flex items-center justify-center text-white font-extrabold text-2xl">
-              {profile?.fullName?.[0] || 'U'}
+        <div className="glass-panel rounded-[3rem] p-10 mb-10">
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-20 h-20 rounded-full bg-black flex items-center justify-center text-white font-extrabold text-3xl shadow-xl shadow-black/20 animate-float">
+              {profile?.fullName?.[0]?.toUpperCase() || 'U'}
             </div>
             <div>
-              <h1 className="text-xl font-extrabold text-[#374151]">{profile?.fullName}</h1>
-              <p className="text-sm text-[#6B7280]">{profile?.email}</p>
-              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${profile?.role === 'admin' ? 'bg-[#0060AE] text-white' : 'bg-[#EBF5FF] text-[#0060AE]'}`}>
-                {profile?.role === 'admin' ? 'Administrator' : 'Member'}
+              <h1 className="text-2xl lg:text-3xl font-extrabold text-black uppercase tracking-tighter mb-1 text-gradient">{profile?.fullName}</h1>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">{profile?.email}</p>
+              <span className={`text-[9px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow-sm ${profile?.role === 'admin' ? 'bg-red-500 text-white shadow-red-500/20' : 'bg-black text-white shadow-black/20'}`}>
+                {profile?.role === 'admin' ? 'ADMINISTRATOR' : 'MEMBER'}
               </span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { label: 'Umur',      value: profile?.age ? `${profile.age} tahun` : '-' },
-              { label: 'Pekerjaan', value: profile?.job || '-' },
-              { label: 'Negara',    value: profile?.country || '-' },
-              { label: 'No. HP',    value: profile?.phone || '-' }
+              { label: 'UMUR',      value: profile?.age ? `${profile.age} TAHUN` : '-' },
+              { label: 'PEKERJAAN', value: profile?.job || '-' },
+              { label: 'NEGARA',    value: profile?.country || '-' },
+              { label: 'NO. HP',    value: profile?.phone || '-' }
             ].map(i => (
-              <div key={i.label} className="bg-[#F9FAFB] rounded-xl p-3">
-                <p className="text-[10px] font-semibold text-[#6B7280] uppercase tracking-wide">{i.label}</p>
-                <p className="text-sm font-bold text-[#374151] mt-0.5">{i.value}</p>
+              <div key={i.label} className="bg-white/60 backdrop-blur-md rounded-2xl p-4 shadow-sm border border-white/50 hover:bg-white/80 transition-colors">
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">{i.label}</p>
+                <p className="text-sm font-extrabold text-black uppercase">{i.value}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="section-title">Perpustakaan Saya ({library.length} buku)</h2>
-            <Link to="/library" className="text-xs text-[#0060AE] font-semibold hover:underline">Lihat Semua</Link>
+        <div className="glass-panel rounded-[3rem] p-8 mb-10">
+          <div className="flex items-center justify-between mb-6 border-b border-gray-200/50 pb-4">
+            <h2 className="section-title text-gradient">PERPUSTAKAAN SAYA ({library.length})</h2>
+            <Link to="/library" className="text-[10px] text-black font-extrabold uppercase tracking-widest hover:underline">LIHAT SEMUA &rarr;</Link>
           </div>
           {library.length === 0
-            ? <p className="text-sm text-[#6B7280]">Belum ada buku. Checkout buku untuk mulai membaca!</p>
+            ? <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">BELUM ADA BUKU. CHECKOUT BUKU UNTUK MULAI MEMBACA!</p>
             : (
-              <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+              <div className="flex gap-4 lg:gap-6 overflow-x-auto scrollbar-hide pb-4">
                 {library.slice(0, 5).map(b => (
-                  <div key={b.bookId?._id} className="flex-shrink-0 w-32">
+                  <div key={b.bookId?._id} className="flex-shrink-0 w-40">
                     <BookCard book={b.bookId || {}} />
                   </div>
                 ))}
@@ -75,16 +75,16 @@ export default function ProfilePage() {
         </div>
 
         {profile?.myComments?.length > 0 && (
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-6">
-            <h2 className="section-title mb-4">Komentar Terbaru Saya</h2>
-            <div className="space-y-3">
+          <div className="glass-panel rounded-[3rem] p-8">
+            <h2 className="section-title mb-6 border-b border-gray-200/50 pb-4 text-gradient">KOMENTAR TERBARU SAYA</h2>
+            <div className="space-y-4">
               {profile.myComments.slice(-5).reverse().map((c, i) => (
-                <div key={i} className="border-b border-[#F3F4F6] pb-3 last:border-0">
-                  <p className="text-xs text-[#0060AE] font-semibold mb-0.5">
-                    Comment for Book: <Link to={`/book/${c.bookId}`} className="hover:underline">{c.bookId}</Link>
+                <div key={i} className="border-b border-gray-200/50 pb-4 last:border-0">
+                  <p className="text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-widest">
+                    BUKU: <Link to={`/book/${c.bookId}`} className="text-black hover:underline">{c.bookId}</Link>
                   </p>
-                  <p className="text-sm text-[#374151]">{c.text}</p>
-                  <p className="text-[10px] text-[#6B7280] mt-0.5">{new Date(c.createdAt).toLocaleDateString('id-ID')}</p>
+                  <p className="text-sm font-medium text-gray-600 leading-relaxed">{c.text}</p>
+                  <p className="text-[9px] font-bold text-gray-300 mt-2 uppercase tracking-widest">{new Date(c.createdAt).toLocaleDateString('id-ID')}</p>
                 </div>
               ))}
             </div>

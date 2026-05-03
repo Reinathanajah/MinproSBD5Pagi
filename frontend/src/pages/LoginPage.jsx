@@ -19,51 +19,55 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] p-8">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-0.5 mb-1">
-              <span className="text-2xl font-extrabold" style={{ color: '#0060AE' }}>Folio</span>
-              <span className="text-2xl font-extrabold" style={{ color: '#F59E0B' }}>!</span>
+    <div className="min-h-[85vh] bg-mesh-gradient flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md relative">
+        <div className="absolute -top-10 -left-10 w-32 h-32 bg-gray-200 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-pulse"></div>
+        <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-neutral-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
+        
+        <div className="glass-panel rounded-[3rem] p-10 relative z-10">
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-1 mb-2 animate-float">
+              <span className="text-4xl font-extrabold text-black uppercase tracking-tighter text-gradient">FOLIO.</span>
             </div>
-            <p className="text-sm text-[#6B7280]">Selamat datang kembali!</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">SELAMAT DATANG KEMBALI</p>
           </div>
 
           {err && (
-            <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg px-4 py-3 mb-5">{err}</div>
+            <div className="bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl px-4 py-3 mb-6 text-center shadow-lg shadow-red-500/20">
+              {err}
+            </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold text-[#374151] mb-1.5">Email</label>
+              <label className="block text-[10px] font-bold text-black mb-2 uppercase tracking-widest">EMAIL</label>
               <input
                 type="email" value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="email@contoh.com" required className="input-field"
+                placeholder="NAMA@CONTOH.COM" required className="input-field bg-white/60 backdrop-blur-md"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-[#374151] mb-1.5">Password</label>
+              <label className="block text-[10px] font-bold text-black mb-2 uppercase tracking-widest">PASSWORD</label>
               <div className="relative">
                 <input
                   type={show ? 'text' : 'password'} value={pass} onChange={e => setPass(e.target.value)}
-                  placeholder="Masukkan password" required className="input-field pr-10"
+                  placeholder="MASUKKAN PASSWORD" required className="input-field bg-white/60 backdrop-blur-md pr-24"
                 />
                 <button type="button" onClick={() => setShow(!show)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] text-xs hover:text-[#374151]">
-                  {show ? 'Sembunyikan' : 'Tampilkan'}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-400 hover:text-black uppercase tracking-widest transition-colors">
+                  {show ? 'TUTUP' : 'LIHAT'}
                 </button>
               </div>
             </div>
             <button type="submit" disabled={loading}
-              className="btn-primary w-full py-2.5 disabled:opacity-60">
-              {loading ? 'Memproses...' : 'Masuk'}
+              className="btn-primary w-full mt-8 disabled:opacity-60">
+              {loading ? 'MEMPROSES...' : 'MASUK'}
             </button>
           </form>
 
-          <p className="text-center text-sm text-[#6B7280] mt-6">
-            Belum punya akun?{' '}
-            <Link to="/register" className="text-[#0060AE] font-semibold hover:underline">Daftar sekarang</Link>
+          <p className="text-center text-[10px] font-bold text-gray-400 mt-8 uppercase tracking-widest">
+            BELUM PUNYA AKUN?{' '}
+            <Link to="/register" className="text-black hover:underline transition-all font-extrabold">DAFTAR SEKARANG</Link>
           </p>
         </div>
       </div>

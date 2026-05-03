@@ -24,61 +24,54 @@ export default function IntroScreen({ onDone }) {
 
   return (
     <div
-      className={leaving ? 'folio-screen-out' : ''}
+      className={`bg-mesh-gradient ${leaving ? 'folio-screen-out' : ''}`}
       style={{
         position: 'fixed', inset: 0, zIndex: 9999,
-        backgroundColor: '#ffffff',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         gap: '1.5rem',
         pointerEvents: 'none'
       }}
     >
-      <div className="folio-title-anim" style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
-        <span style={{
-          fontFamily: "'Nunito Sans', sans-serif",
+      <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-0 pointer-events-none"></div>
+
+      <div className="folio-title-anim animate-float z-10" style={{ display: 'flex', alignItems: 'baseline', gap: '2px', animationDuration: '4s' }}>
+        <span className="text-gradient" style={{
           fontWeight: 800,
           fontSize: 'clamp(3.5rem, 10vw, 6rem)',
-          color: '#0060AE',
-          letterSpacing: '-2px',
-          lineHeight: 1
-        }}>Folio</span>
-        <span style={{
-          fontFamily: "'Nunito Sans', sans-serif",
-          fontWeight: 800,
-          fontSize: 'clamp(3.5rem, 10vw, 6rem)',
-          color: '#F59E0B',
-          lineHeight: 1
-        }}>!</span>
+          letterSpacing: '-4px',
+          lineHeight: 1,
+          textTransform: 'uppercase'
+        }}>Folio.</span>
       </div>
 
-      <p className="folio-sub-anim" style={{
-        fontFamily: "'Nunito Sans', sans-serif",
-        fontWeight: 600,
-        fontSize: 'clamp(0.875rem, 2.5vw, 1.1rem)',
-        color: '#F59E0B',
-        letterSpacing: '0.05em',
+      <p className="folio-sub-anim z-10" style={{
+        fontWeight: 800,
+        fontSize: 'clamp(0.65rem, 2vw, 0.85rem)',
+        color: '#6B7280',
+        letterSpacing: '0.2em',
         margin: 0,
-        textAlign: 'center'
+        textAlign: 'center',
+        textTransform: 'uppercase'
       }}>
-        The Book Should Have Found You So!
+        The books should have found you so
       </p>
 
-      <div className="folio-sub-anim" style={{
-        width: 'clamp(180px, 40vw, 300px)',
-        height: '3px',
-        backgroundColor: '#FEF3C7',
+      <div className="folio-sub-anim z-10" style={{
+        width: 'clamp(150px, 30vw, 250px)',
+        height: '2px',
+        backgroundColor: '#E5E7EB',
         borderRadius: '9999px',
         overflow: 'hidden',
-        marginTop: '0.5rem'
+        marginTop: '1rem',
+        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)'
       }}>
         <div style={{
           height: '100%',
           width: `${Math.min(progress, 100)}%`,
-          backgroundColor: '#FBBF24',
+          backgroundColor: '#000000',
           borderRadius: '9999px',
-          transition: 'width 0.03s linear',
-          boxShadow: '0 0 8px rgba(251,191,36,0.6)'
+          transition: 'width 0.03s linear'
         }} />
       </div>
     </div>
